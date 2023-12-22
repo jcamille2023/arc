@@ -31,7 +31,11 @@ function logout() {
   });
 }
 window.logout = logout;
+function submit_
 
+function create_an_arc() {
+ window.location.href = "./create.html";
+}
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
