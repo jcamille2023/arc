@@ -46,14 +46,14 @@ window.submit = submit;
 
 function cancel() {
  var div = document.getElementById("add-arcs");
- div.setAttribute("style","visiblity: hidden;");
+ div.style.visibility = "hidden";
  div.innerHTML = "";
 }
 window.cancel = cancel;
 
 function create_an_arc() {
  var div = document.getElementById("add-arcs");
-  div.style.visibility = visible;
+  div.style.visibility = "visible";
   div.innerHTML = "<div style='padding: 10px;'>" + 
   "<h1>Create an arc</h1>" + 
   "<h4>Name</h4>" + 
