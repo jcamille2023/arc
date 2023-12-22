@@ -37,13 +37,14 @@ div#wrapper {
 }
 
 .overlay {
-  top: 50%;
   z-index: 9;
-  margin-left: 33%;
-  width: 33%;
+  text-align: center;
+  width: 90%;
+  height: 90%
 }
 
-#add_arcs {
+#add_arcs > div {
     background-color: black;
+  
 }
 
