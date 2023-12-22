@@ -61,6 +61,7 @@ function create_an_arc() {
   '</div>';
    
 }
+window.create_an_arc = create_an_arc;
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
