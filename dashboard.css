@@ -1,10 +1,11 @@
 div#header {
-    background-image: linear-gradient(65deg, blue, purple);
+    background-color: black;
     color: white;
 }
 
 body {
     margin: 0px;
+    background-image: linear-gradient(65deg, #000092,#0e0f24);
 }
 
 
@@ -12,28 +13,6 @@ div#wrapper {
     margin: 14px;
 }
 
-section#open-section {
-
-    text-align: center; 
-
-}
-
-section#height-section {
-    margin-left: 33%;
-    margin-right: 33%;
-    height: 100%;
-    text-align: center; 
-
-}
-
-
-tr#days {
-    padding: 5px;
-}
-
-tr {
-    border: 1px solid black;
-}
 
 .container {
   position: relative;
@@ -57,33 +36,3 @@ tr {
   width: 33%;
 }
 
-div#add-events-2 {
-    background-image: linear-gradient(65deg,blue,purple);
-    color: white;
-    padding: 15px;
-}
-
-.new_event_buttons {
-    padding: 2px;
-    margin:5px;
-    background-color: transparent;
-    color: white;
-    border: 2px solid white;
-    font-family: 'century-gothic';
-}
-
-div#add-events-2 > table {
-  color: white;
-}
-
-
-
-#time-section {
-  background-image: url("graph_paper.png");
-  margin-left: 33%;
-  
-  background-repeat: no-repeat;
-  height:100%;
-  background-size: contain;
-
-}
