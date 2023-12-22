@@ -1,5 +1,12 @@
 div#header {
     background-color: black;
+}
+
+section#open-section {
+    color: white;
+}
+
+#header > table{
     color: white;
 }
 
