@@ -5,3 +5,17 @@ html {
   font-weight: 400;
   font-style: normal;
 }
+
+button {
+  background: transparent;
+  color: white;
+  padding: 10px;
+  margin: 5px;
+  border: 1px solid white;
+}
+
+button:hover {
+  transition: 0.3s;
+  color: black;
+  background: white;
+}
