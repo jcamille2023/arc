@@ -20,7 +20,7 @@ var row_filled = false;
   const app = initializeApp(firebaseConfig);
   const database = getDatabase(app);
   const auth = getAuth(app);
-
+  const dbRef = ref(getDatabase());
 
 function logout() {
   signOut(auth).then(() => {
@@ -31,10 +31,35 @@ function logout() {
   });
 }
 window.logout = logout;
-function submit_
+function submit() {
+ var channel_id = Math.floor(Math.random()*99999);
+ let members = {owner: uid};   
+ let name = document.getElementById("name").value;
+ set(ref(database, "/channel/" + channel_id), {name: name});
+ set(ref(database, "/channel/" + channel_id + "/members/"), members);
+ var url = new URL("https://jcamille2023.github.io/arc/channel");
+ url.searchParams.append('channel_id', channel_id);
+ console.log(url);
+ window.location.href = url;
+}
+
+function cancel() {
+ var div = document.getElementById("add-arcs");
+ div.setAttribute("style","visiblity: hidden;");
+ div.innerHTML = "";
+}
 
 function create_an_arc() {
- window.location.href = "./create.html";
+ var div = document.getElementById("add-arcs");
+  div.setAttribute("style","visiblity: visible;");
+  div.innerHTML = "<div id='add-arcs'>" + 
+  "<h1>Create an arc</h1>" + 
+  "<h4>Name</h4>" + 
+  "<input type='text' id='name'></input>" + 
+  '<button onclick="submit()">Submit</button>'+
+  '<button onclick="cancel()">Cancel</button>'+
+  '</div>';
+   
 }
 
 onAuthStateChanged(auth, (user) => {
