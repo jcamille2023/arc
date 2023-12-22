@@ -42,17 +42,19 @@ function submit() {
  console.log(url);
  window.location.href = url;
 }
+window.submit = submit;
 
 function cancel() {
  var div = document.getElementById("add-arcs");
  div.setAttribute("style","visiblity: hidden;");
  div.innerHTML = "";
 }
+window.cancel = cancel;
 
 function create_an_arc() {
  var div = document.getElementById("add-arcs");
-  div.setAttribute("style","visiblity: visible;");
-  div.innerHTML = "<div id='add-arcs'>" + 
+  div.style.visibility = visible;
+  div.innerHTML = "<div style='padding: 10px;'>" + 
   "<h1>Create an arc</h1>" + 
   "<h4>Name</h4>" + 
   "<input type='text' id='name'></input>" + 
