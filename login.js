@@ -7,12 +7,13 @@
 
   // Your web app's Firebase configuration
   const firebaseConfig = {
-    apiKey: "AIzaSyCqUDOyX-OrrrncNv5uABW8hiLndPsMDMg",
-    authDomain: "insight-34bc8.firebaseapp.com",
-    projectId: "insight-34bc8",
-    storageBucket: "insight-34bc8.appspot.com",
-    messagingSenderId: "652635905647",
-    appId: "1:652635905647:web:05a5378b1f51f58a6d779a"
+    apiKey: "AIzaSyC5oq9fyPeoo8jVU-N07gYhjt2kFEBGqA8",
+    authDomain: "arc-by-insight.firebaseapp.com",
+    projectId: "arc-by-insight",
+    storageBucket: "arc-by-insight.appspot.com",
+    messagingSenderId: "1073428960179",
+    appId: "1:1073428960179:web:c61897786f1d2ba05131c6",
+    measurementId: "G-47T814R2SK"
   };
 
   // Initialize Firebase
