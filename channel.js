@@ -103,9 +103,30 @@ function manage_users() {
   "<input type='text' id='email'></input>" + 
   '<button onclick="submit()">Submit</button>'+
   '<button onclick="cancel()">Cancel</button>'+
-  '<div id="members-list"></div>'+
+  '<div><h1>Members</h1>'+
+'<table id="members_list"><tbody></tbody></table></div>'+
   '</div>';
-   
+get(child(dbRef, "/channel/" + channel_id + "/members/")).then((snapshot) => {
+	let table = document.getElementById("members-list");
+	let data = snapshot.val();
+	let members_list = Object.values(data);
+	for(let n = 0, n < members_list.length, n++) {
+		let row = table.insertRow(-1);
+		// let pfp_cell = row.insertCell(-1);
+		let cell = row.insertCell(-1);
+		let name = document.createElement("p");
+		let nameNode = document.createTextNode(members_list[n]);
+		nameNode.append(name);
+		cell.append(name);
+		let delete_cell = row.insertCell(-1);
+		let delete_button = document.createElement("button")
+		let delete_icon = document.createElement("img");
+		delete_icon.setAttribute("src","./assets/delete_icon.jpg");
+		delete_button.setAttribute("onclick","delete(" + members_list[n] + ")");
+		delete_button.appendChild(delete_icon);
+		delete_cell.appendChild(delete_button);
+	}
+});
 }
 window.manage_users = manage_users;
 
