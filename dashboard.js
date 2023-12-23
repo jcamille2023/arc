@@ -84,7 +84,9 @@ onAuthStateChanged(auth, (user) => {
      let data = snapshot.val();
      console.log(data);
      let arc_table = document.getElementById("channels-table");
+     let arc_lists = Object.keys(data);
      for(let n = 0; n < Object.keys(data).length; n++) {
+      let arc_data = data[arc_lists[n]]
       let arc = arc_table.insertRow(-1);
       let arc_cell = arc.insertCell(-1);
       let arc_container = document.createElement("div");
@@ -93,7 +95,7 @@ onAuthStateChanged(auth, (user) => {
       let join_arc = document.createElement("button");
       join_arc.innerHTML = "Join";
       join_arc.setAttribute("onclick","join(" + arc_number + ")");
-      let arc_name_node = document.createTextNode(data[Object.keys(data)[n]].name);
+      let arc_name_node = document.createTextNode(arc_data.name);
       arc_name.appendChild(arc_name_node);
       arc_container.appendChild(arc_name);
       arc_container.appendChild(join_arc);
