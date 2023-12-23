@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut} from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
 import { getDatabase, set, ref, onValue, get, child } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
+import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-messaging.js";
 var uid;
 var new_user_uid;
 var display_name;
@@ -22,6 +23,7 @@ const channel_id = searchParams.get('channel_id');
   const database = getDatabase(app);
   const auth = getAuth(app);
   const dbRef = ref(getDatabase());
+  const messaging = getMessaging(app);
 
 function logout() {
   signOut(auth).then(() => {
@@ -149,6 +151,10 @@ onAuthStateChanged(auth, (user) => {
   if (user) {
     // User is signed in, see docs for a list of available properties
     // https://firebase.google.com/docs/reference/js/auth.user
+    onMessage(messaging, (payload) => {
+  console.log('Message received. ', payload);
+  // ...
+});
     console.log(user);
     uid = user.uid;
     display_name = user.displayName;
