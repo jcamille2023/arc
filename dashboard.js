@@ -82,6 +82,7 @@ onAuthStateChanged(auth, (user) => {
     var arcs_ref = ref(database, "users/" + uid + "/channels/");
     onValue(arcs_ref, (snapshot) => {
      let data = snapshot.val();
+     console.log(data);
      let arc_table = document.getElementById("channels-table");
      for(let n = 0; n < Object.keys(data).length; n++) {
       let arc = arc_table.insertRow(-1);
