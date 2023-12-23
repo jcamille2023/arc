@@ -5,7 +5,6 @@ var uid;
 var display_name;
 const searchParams = new URLSearchParams(window.location.search);
 const channel_id = searchParams.get('channel_id');
-
  const firebaseConfig = {
   apiKey: "AIzaSyC5oq9fyPeoo8jVU-N07gYhjt2kFEBGqA8",
   authDomain: "arc-by-insight.firebaseapp.com",
@@ -30,9 +29,7 @@ function logout() {
   // An error happened.
   });
 }
-function email_exists(e) {
- get(child(dbRef, "/users/")).then((snapshot) => {
-  const data = snapshot.val();
+function email_exists(e,data) {
   console.log(data);
   let user_list = Object.keys(data);
 console.log(user_list);
@@ -46,11 +43,10 @@ console.log(user_list[n]);
      return true;
    }
    else {
-    continue
+    continue;
    }
   }
 return false;
- });
 }
 function get_uid(e) {
  get(child(dbRef, "/users/")).then((snapshot) => {
@@ -79,9 +75,13 @@ window.logout = logout;
 function submit() {
 var members;
 let added_email = document.getElementById("email").value;
-console.log("hi");
-console.log(email_exists(added_email));
- if(email_exists(added_email) === true) {
+var match;
+get(child(dbRef, "/users/")).then((snapshot) => {
+	let data = snapshot.val();
+	match = email_exists(added_email,data);
+});
+console.log(match);
+ if(match === true) {
  get(child(dbRef, "/channel/" + channel_id + "/members/")).then((snapshot) => {
    let data = snapshot.val();
    members = data.members;
