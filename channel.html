@@ -1,0 +1,72 @@
+<html><head>
+    <title>Dashboard - Arc</title>
+    <link rel="stylesheet" type="text/css" href="channel.css">
+    <link rel="stylesheet" type="text/css" href="stylesheet.css">
+</head><body>
+    <script src="channel.js" type="module"></script>
+    
+    
+    <div id="header">
+        <table>
+            <tbody>
+                <tr>
+                <td width="88.25%">
+                    <h2>Arc</h2>
+                </td>
+                <td>
+                    <p id="username">Jossaya Camille</p>
+                </td>
+                <td>
+                    <a href="dashboard">Dashboard</a>
+                </td>
+                <td><a href="javascript:logout()">Sign out</a></td>
+</tr>
+            </tbody>
+        </table>
+</div>
+<div id="container" class="container">
+<div id="main" class="box">
+<section id="open-section">
+        <h1 id="channel name">Channel name</h1>
+        
+    <button onclick="manage_users()">Manage users</button>
+    </section>
+    
+<section id="chatbox">
+    <table id="channels-table">
+        <tbody>
+            <tr id="messagelog-row">
+                <td><div id="msg-contain"></div></td>
+            </tr>
+            <tr>
+                <td>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td width="80%">
+                                    <input type="text" id="messagebox">
+                                </td>
+                                <td width="20%">
+                                    <button onclick="send()">Send</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+
+
+    
+            
+ 
+
+</section>
+</div> <!-- end box -->
+<div id="manage_users" class="box overlay" style="color: white;background-color: black;visibility: hidden;"></div> <!-- end overlay -->
+</div> <!-- end container -->
+
+
+</body></html>
