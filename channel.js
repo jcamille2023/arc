@@ -116,7 +116,7 @@ get(child(dbRef, "/channel/" + channel_id + "/members/")).then((snapshot) => {
 		let cell = row.insertCell(-1);
 		let name = document.createElement("p");
 		let nameNode = document.createTextNode(members_list[n]);
-		nameNode.append(name);
+		name.append(nameNode);
 		cell.append(name);
 		let delete_cell = row.insertCell(-1);
 		let delete_button = document.createElement("button")
