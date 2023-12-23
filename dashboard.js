@@ -44,6 +44,13 @@ function submit() {
 }
 window.submit = submit;
 
+function join(e) {
+ var url = new URL("https://jcamille2023.github.io/arc/channel");
+ url.searchParams.append('channel_id', e);
+ console.log(url);
+ window.location.href = url;
+}
+
 function cancel() {
  var div = document.getElementById("add-arcs");
  div.style.visibility = "hidden";
@@ -91,9 +98,10 @@ onAuthStateChanged(auth, (user) => {
       let arc_cell = arc.insertCell(-1);
       let arc_container = document.createElement("div");
       let arc_name = document.createElement("h3");
+      arc_name.style.color = "white";
       let arc_number = Object.keys(data)[n];
       let join_arc = document.createElement("button");
-      join_arc.innerHTML = "Join";
+      join_arc.innerHTML = "Go to arc";
       join_arc.setAttribute("onclick","join(" + arc_number + ")");
       let arc_name_node = document.createTextNode(arc_data.name);
       arc_name.appendChild(arc_name_node);
