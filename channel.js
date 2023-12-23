@@ -107,7 +107,7 @@ function manage_users() {
 '<table id="members_list"><tbody></tbody></table></div>'+
   '</div>';
 get(child(dbRef, "/channel/" + channel_id + "/members/")).then((snapshot) => {
-	let table = document.getElementById("members-list");
+	let table = document.getElementById("members_list");
 	let data = snapshot.val();
 	let members_list = Object.values(data);
 	for(let n = 0; n < members_list.length; n++) {
