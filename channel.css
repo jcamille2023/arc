@@ -1,0 +1,62 @@
+div#header {
+    background-color: black;
+}
+
+div#msg-contain {
+    overflow: auto;
+    color: white;
+    max-height:440px;
+    
+}
+
+table#channels-table {
+    bottom: 0;
+    position: fixed;
+}
+
+section#open-section {
+    color: white;
+}
+
+#header > table{
+    color: white;
+}
+
+body {
+    margin: 0px;
+    background-image: linear-gradient(65deg, #000092,#0e0f24);
+}
+
+
+div#wrapper {
+    margin: 14px;
+}
+
+
+.container {
+  position: relative;
+  margin: 30px;
+
+}
+
+.box {
+  width: 100%;
+  /* height: 92%; */
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 1.0;
+}
+
+.overlay {
+  z-index: 9;
+  text-align: center;
+  width: 90%;
+  height: 90%
+}
+
+#manage_users > div {
+    background-color: black;
+  
+}
+
