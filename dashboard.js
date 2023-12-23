@@ -34,7 +34,7 @@ function submit() {
  var channel_id = Math.floor(Math.random()*99999);
  let members = [user_email];   
  let name = document.getElementById("name").value;
- set(ref(database, user_email + "/channels/" + channel_id), {type: owner});
+ set(ref(database, user_email + "/channels/" + channel_id), {type: "owner"});
  set(ref(database, "/channel/" + channel_id + "/basic_data"), {name: name});
  set(ref(database, "/channel/" + channel_id + "/members/"),{members: members});
  var url = new URL("https://jcamille2023.github.io/arc/channel");
@@ -79,9 +79,20 @@ onAuthStateChanged(auth, (user) => {
      let data = snapshot.val();
      let arc_table = document.getElementById("channels-table");
      for(let n = 0; n < Object.keys(data).length; n++) {
-      let arc = document.createElement("div");
+      let arc = arc_table.insertRow(-1);
+      let arc_cell = arc.insertCell(-1);
+      let arc_container = document.createElement("div");
       let arc_name = document.createElement("h3");
-      let 
+      let arc_number = Object.keys(data)[n];
+      let join_arc = document.createElement("button");
+      join_arc.innerHTML = "Join";
+      join_arc.setAttribute("onclick","join(" + arc_number + ")");
+      let arc_name_node = document.createTextNode(data[Object.keys(data)[n]].name);
+      arc_name.appendChild(arc_name_node);
+      arc_container.appendChild(arc_name);
+      arc_container.appendChild(join_arc);
+      arc_cell.appendChild(arc_container);
+      arc.appendChild(arc_cell);
      }
     });
     
