@@ -50,6 +50,7 @@ function join(e) {
  console.log(url);
  window.location.href = url;
 }
+window.join = join;
 
 function cancel() {
  var div = document.getElementById("add-arcs");
@@ -96,6 +97,8 @@ onAuthStateChanged(auth, (user) => {
       let arc_data = data[arc_lists[n]]
       let arc = arc_table.insertRow(-1);
       let arc_cell = arc.insertCell(-1);
+      arc_cell.style.padding = "15px";
+      arc_cell.style.background = "black";
       let arc_container = document.createElement("div");
       let arc_name = document.createElement("h3");
       arc_name.style.color = "white";
