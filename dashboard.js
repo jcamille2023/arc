@@ -92,6 +92,7 @@ onAuthStateChanged(auth, (user) => {
      let data = snapshot.val();
      console.log(data);
      let arc_table = document.getElementById("channels-table");
+     arc_table.innerHTML = "";
      for(let n = 0; n < Object.keys(data).length; n++) {
       let arc_number = Object.keys(data)[n];
       get(child(dbRef, '/channel/' + arc_number + "/basic_data")).then((snapshot) => {
