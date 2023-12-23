@@ -118,7 +118,7 @@ onAuthStateChanged(auth, (user) => {
     uid = user.uid;
     display_name = user.displayName;
     document.getElementById("username").innerHTML = user.displayName;
-   get(child(dbRef, '/channel/' + channel_id)).then((snapshot) => {
+   get(child(dbRef, '/channel/' + channel_id + '/messages')).then((snapshot) => {
 		return snapshot.val();
 	}).catch((error) => {
 		console.log(error);
