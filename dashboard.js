@@ -74,6 +74,11 @@ onAuthStateChanged(auth, (user) => {
     user_email = user.email;
     document.getElementById("username").innerHTML = user.displayName;
     document.getElementById("user-greeting").innerHTML = "Hi, " + user.displayName + "!";
+    let basic_info = {
+     displayName: user.displayName,
+     email: user.email,
+    };
+   set(ref(database, "users/" + uid + "/basic_info"), basic_info);
     var arcs_ref = ref(database, uid + "/channels/");
     onValue(arcs_ref, (snapshot) => {
      let data = snapshot.val();
