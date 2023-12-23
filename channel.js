@@ -30,12 +30,29 @@ function logout() {
   // An error happened.
   });
 }
+function email_exists(e) {
+ get(child(dbRef, "/users/")).then((snapshot) => {
+  const data = snapshot.val();
+  console.log(data);
+  let user_list = Object.keys(data);
+  for(let n = 0; n < user_list.length; n++) {
+   let user_email = data[user_list[n]].email;
+   if(user_email == e) {
+     return true;
+   }
+   else {
+    return false;
+   }
+  }
+ });
+}
 window.logout = logout;
 function submit() {
 var members;
+let added_email = document.getElementById("email").value;
 console.log("hi");
+ if(email_exists(added_email) == true) {
  get(child(dbRef, "/channel/" + channel_id + "/members/")).then((snapshot) => {
-   let added_email = document.getElementById("email").value;
    let data = snapshot.val();
    members = data.members;
    members.push(added_email);
@@ -44,6 +61,15 @@ console.log("hi");
    cancel();
    document.getElementById("success").innerHTML = "Successfully added " + document.getElementById("email").value;
  });
+}
+ else {
+  var div = document.getElementById("manage_users");
+  let error = document.createElement("p");
+  let error_text = document.createTextNode("The user " + added_email + " does not exist.");
+  error.appendChild(error_text);
+  error.style.color = "red";
+  div.appendChild(error);
+ }
 }
 window.submit = submit;
 
@@ -92,10 +118,12 @@ onAuthStateChanged(auth, (user) => {
     uid = user.uid;
     display_name = user.displayName;
     document.getElementById("username").innerHTML = user.displayName;
-    get(child(dbRef, "/channel/" + channel_id)).then((snapshot) => {console.log(snapshot.val()}).catch((error) => {
-     console.log(error);
+   get(child(dbRef, '/channel/' + channel_id)).then((snapshot) => {
+		return snapshot.val();
+	}).catch((error) => {
+		console.log(error);
      document.getElementById("main").innerHTML = "<h1>Error</h1><br><p>There was an error loading this channel.</p><a href='./dashboard.html'>Return to dashboard</a>";
-    });
+	});
     var data_ref = ref(database, "/channel/" + channel_id + "/basic_data/");
     onValue(data_ref, (snapshot) => {
       let data = snapshot.val();
