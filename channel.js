@@ -33,11 +33,13 @@ function logout() {
 window.logout = logout;
 function submit() {
 var members;
+console.log("hi");
  get(child(dbRef, "/channel/" + channel_id + "/members/"), (snapshot) => {
    let added_email = document.getElementById("email").value;
    let data = snapshot.val();
    members = data.members;
    members.push(added_email);
+   console.log(members);
    set(ref(database, "/channel/" + channel_id + "/members/"), {members: members});
    cancel();
    document.getElementById("success").innerHTML = "Successfully added " + document.getElementById("email").value;
