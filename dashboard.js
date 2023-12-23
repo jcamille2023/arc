@@ -34,7 +34,7 @@ function submit() {
  var channel_id = Math.floor(Math.random()*99999);
  let members = [user_email];   
  let name = document.getElementById("name").value;
- set(ref(database, user_email + "/channels/" + channel_id), {type: "owner"});
+ set(ref(database, uid + "/channels/" + channel_id), {type: "owner"});
  set(ref(database, "/channel/" + channel_id + "/basic_data"), {name: name});
  set(ref(database, "/channel/" + channel_id + "/members/"),{members: members});
  var url = new URL("https://jcamille2023.github.io/arc/channel");
@@ -74,7 +74,7 @@ onAuthStateChanged(auth, (user) => {
     user_email = user.email;
     document.getElementById("username").innerHTML = user.displayName;
     document.getElementById("user-greeting").innerHTML = "Hi, " + user.displayName + "!";
-    var arcs_ref = ref(database, user_email + "/channels/");
+    var arcs_ref = ref(database, uid + "/channels/");
     onValue(arcs_ref, (snapshot) => {
      let data = snapshot.val();
      let arc_table = document.getElementById("channels-table");
