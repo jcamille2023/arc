@@ -92,17 +92,18 @@ onAuthStateChanged(auth, (user) => {
      let data = snapshot.val();
      console.log(data);
      let arc_table = document.getElementById("channels-table");
-     let arc_lists = Object.keys(data);
      for(let n = 0; n < Object.keys(data).length; n++) {
-      let arc_data = data[arc_lists[n]]
-      let arc = arc_table.insertRow(-1);
+      let arc_number = Object.keys(data)[n];
+      get(child(dbRef, '/channel/' + arc_number + "/basic_data")).then((snapshot) => {
+       let arc_data = snapshot.val()
+       let arc = arc_table.insertRow(-1);
       let arc_cell = arc.insertCell(-1);
       arc_cell.style.padding = "15px";
       arc_cell.style.background = "black";
       let arc_container = document.createElement("div");
       let arc_name = document.createElement("h3");
       arc_name.style.color = "white";
-      let arc_number = Object.keys(data)[n];
+  
       let join_arc = document.createElement("button");
       join_arc.innerHTML = "Go to arc";
       join_arc.setAttribute("onclick","join(" + arc_number + ")");
@@ -112,6 +113,8 @@ onAuthStateChanged(auth, (user) => {
       arc_container.appendChild(join_arc);
       arc_cell.appendChild(arc_container);
       arc.appendChild(arc_cell);
+      });
+      
      }
     });
     
