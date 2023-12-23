@@ -34,7 +34,7 @@ function submit() {
  var channel_id = Math.floor(Math.random()*99999);
  let members = [user_email];   
  let name = document.getElementById("name").value;
- set(ref(database, "/channel/" + channel_id), {name: name});
+ set(ref(database, "/channel/" + channel_id + "/basic_data"), {name: name});
  set(ref(database, "/channel/" + channel_id + "/members/"),{members: members});
  var url = new URL("https://jcamille2023.github.io/arc/channel");
  url.searchParams.append('channel_id', channel_id);
