@@ -2,6 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebas
 import { getAuth, onAuthStateChanged, signOut} from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
 import { getDatabase, set, ref, onValue, get, child } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
 var uid;
+var new_user_uid;
 var display_name;
 const searchParams = new URLSearchParams(window.location.search);
 const channel_id = searchParams.get('channel_id');
@@ -39,6 +40,7 @@ console.log(user_list[n]);
     console.log(user_email);
    console.log(e);
    if(user_email === e) {
+     new_user_uid = user_list[n];
      console.log("Match found!");
      return true;
    }
@@ -47,29 +49,6 @@ console.log(user_list[n]);
    }
   }
 return false;
-}
-function get_uid(e) {
- get(child(dbRef, "/users/")).then((snapshot) => {
-  const data = snapshot.val();
-  console.log(data);
-  let user_list = Object.keys(data);
-console.log(user_list);
-  for(let n = 0; n < user_list.length; n++) {
-console.log(user_list[n]);
-   let user_email = data[user_list[n]].basic_info.email;
-   let uid = user_list[n];
-    console.log(user_email);
-   console.log(e);
-   if(user_email === e) {
-     console.log("Match found!");
-     return uid;
-   }
-   else {
-    continue
-   }
-  }
-return "DNE";
- });
 }
 window.logout = logout;
 function submit() {
@@ -87,7 +66,7 @@ get(child(dbRef, "/users/")).then((snapshot) => {
    members.push(added_email);
    console.log(members);
    set(ref(database, "/channel/" + channel_id + "/members/"), {members: members});
-   set(ref(database, "/users/" + get_uid(added_email) + "/channels/" + channel_id), {type: "member"});
+   set(ref(database, "/users/" + new_user_uid + "/channels/" + channel_id), {type: "member"});
    cancel();
    document.getElementById("success").innerHTML = "Successfully added " + added_email;
 
