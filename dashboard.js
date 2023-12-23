@@ -5,6 +5,7 @@ var uid;
 var dune;
 var first_row_created = false;
 var row_filled = false;
+var user_email;
 
  const firebaseConfig = {
   apiKey: "AIzaSyC5oq9fyPeoo8jVU-N07gYhjt2kFEBGqA8",
@@ -33,7 +34,7 @@ function logout() {
 window.logout = logout;
 function submit() {
  var channel_id = Math.floor(Math.random()*99999);
- let members = {owner: uid};   
+ let members = [email];   
  let name = document.getElementById("name").value;
  set(ref(database, "/channel/" + channel_id), {name: name});
  set(ref(database, "/channel/" + channel_id + "/members/"), members);
@@ -71,6 +72,7 @@ onAuthStateChanged(auth, (user) => {
     // https://firebase.google.com/docs/reference/js/auth.user
     console.log(user);
     uid = user.uid;
+    email = user.email;
     document.getElementById("username").innerHTML = user.displayName;
     document.getElementById("user-greeting").innerHTML = "Hi, " + user.displayName + "!";
 
