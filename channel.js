@@ -4,6 +4,7 @@ import { getDatabase, set, ref, onValue, get, child } from "https://www.gstatic.
 var uid;
 var new_user_uid;
 var display_name;
+var channel_name;
 const searchParams = new URLSearchParams(window.location.search);
 const channel_id = searchParams.get('channel_id');
  const firebaseConfig = {
@@ -66,7 +67,7 @@ get(child(dbRef, "/users/")).then((snapshot) => {
    members.push(added_email);
    console.log(members);
    set(ref(database, "/channel/" + channel_id + "/members/"), {members: members});
-   set(ref(database, "/users/" + new_user_uid + "/channels/" + channel_id), {type: "member"});
+   set(ref(database, "/users/" + new_user_uid + "/channels/" + channel_id), {name: channel_name});
    cancel();
    document.getElementById("success").innerHTML = "Successfully added " + added_email;
 
@@ -142,6 +143,7 @@ onAuthStateChanged(auth, (user) => {
       let data = snapshot.val();
       console.log(document.getElementById("channel_name").innerHTML);
       document.getElementById("channel_name").innerHTML = data.name;
+      channel_name = data.name;
     });
     var message_ref = ref(database, "/channel/" + channel_id + "/messages/");
     onValue(message_ref, (snapshot) => {
