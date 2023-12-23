@@ -38,10 +38,10 @@ var members;
    let data = snapshot.val();
    members = data.members;
    members.push(added_email);
+   set(ref(database, "/channel/" + channel_id + "/members/"), {members: members});
+   cancel();
+   document.getElementById("success").innerHTML = "Successfully added " + document.getElementById("email").value;
  });
- set(ref(database, "/channel/" + channel_id + "/members/"), {members: members});
-  cancel();
-  document.getElementById("success").innerHTML = "Successfully added " + document.getElementById("email").value;
 }
 window.submit = submit;
 
