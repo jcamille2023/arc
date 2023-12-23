@@ -88,9 +88,10 @@ console.log(email_exists(added_email));
    members.push(added_email);
    console.log(members);
    set(ref(database, "/channel/" + channel_id + "/members/"), {members: members});
-   set(ref(database, "/users/" + display_name[1] + "/channels/" + channel_id), {type: "member"});
+   set(ref(database, "/users/" + get_uid(added_email) + "/channels/" + channel_id), {type: "member"});
    cancel();
-   document.getElementById("success").innerHTML = "Successfully added " + display_name[0];
+   document.getElementById("success").innerHTML = "Successfully added " + added_email;
+
  });
 }
  else {
