@@ -53,7 +53,7 @@ function cancel() {
 window.cancel = cancel;
 
 function manage_users() {
- var div = document.getElementById("manage-users");
+ var div = document.getElementById("manage_users");
   div.style.visibility = "visible";
   div.innerHTML = "<div style='padding: 10px;'>" + 
   "<h1>Add a member</h1>" + 
@@ -72,7 +72,8 @@ function send() {
   let content = document.getElementById("messagebox").value;
   document.getElementById("messagebox").value = "";
   let date = new Date();
-  set(ref(database, "/channel/" + channel_id + "/messages/" + message_id), {
+  let msg_date = date.getFullYear() + date.getMonth() + date.getDate() + date.getHours() + date.getMinutes() + data.getSeconds();
+  set(ref(database, "/channel/" + channel_id + "/messages/" + msg_date + message_id), {
     creator: uid,
     display_name: display_name,
     content: content,
@@ -100,6 +101,10 @@ onAuthStateChanged(auth, (user) => {
       let message_box = document.getElementById("msg-contain");
       message_box.innerHTML = "";
       let msg_list = Object.keys(data);
+      for(let n = 0; n < msg_list.length) { // prerequsite for sorting
+       Number(msg_list[n]);
+      }
+      msg_list.sort((a,b) => a-b)
       for(let n = 0; n < msg_list.length; n++) {
         let message = data[msg_list[n]];
         let box = document.createElement("div");
