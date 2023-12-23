@@ -72,7 +72,7 @@ function send() {
   let content = document.getElementById("messagebox").value;
   document.getElementById("messagebox").value = "";
   let date = new Date();
-  let msg_date = date.getFullYear() + date.getMonth() + date.getDate() + date.getHours() + date.getMinutes() + data.getSeconds();
+  let msg_date = date.getFullYear() + date.getMonth() + date.getDate() + date.getHours() + date.getMinutes() + date.getSeconds();
   set(ref(database, "/channel/" + channel_id + "/messages/" + msg_date + message_id), {
     creator: uid,
     display_name: display_name,
@@ -101,17 +101,22 @@ onAuthStateChanged(auth, (user) => {
       let message_box = document.getElementById("msg-contain");
       message_box.innerHTML = "";
       let msg_list = Object.keys(data);
-      for(let n = 0; n < msg_list.length) { // prerequsite for sorting
+      for(let n = 0; n < msg_list.length; n++) { // prerequsite for sorting
        Number(msg_list[n]);
       }
-      msg_list.sort((a,b) => a-b)
+      msg_list.sort((a,b) => a-b);
       for(let n = 0; n < msg_list.length; n++) {
         let message = data[msg_list[n]];
+        let date = new Date(message.date);
+        let datetime = date.getMonth() + date.getDate() + date.getFullYear() + " at " + date.getHours() + ":" + date.getMinutes();
         let box = document.createElement("div");
         box.setAttribute("class","message");
         let username_entry = document.createElement("h4");
         let textNode = document.createTextNode(message.display_name);
         username_entry.appendChild(textNode);
+        let datetime_entry = document.createElement("p");
+        let dateNode = document.createTextNode(datetime);
+        datetime_entry.appendChild(dateNode);
         box.appendChild(username_entry);
         let content = document.createElement("p");
         let textNode2 = document.createTextNode(message.content);
