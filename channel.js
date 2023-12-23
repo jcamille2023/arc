@@ -42,12 +42,14 @@ console.log(user_list[n]);
     console.log(user_email);
    console.log(e);
    if(user_email === e) {
-     return data[user_list[n]].basic_info.displayName;
+     console.log("Match found!");
+     return [data[user_list[n]].basic_info.displayName,user_list[n]];
    }
    else {
-    return false;
+    continue
    }
   }
+return false;
  });
 }
 window.logout = logout;
@@ -63,8 +65,9 @@ let display_name = email_exists(added_email);
    members.push(added_email);
    console.log(members);
    set(ref(database, "/channel/" + channel_id + "/members/"), {members: members});
+   set(ref(database, "/users/" + display_name[1] + "/channels/" + channel_id), {type: "member"});
    cancel();
-   document.getElementById("success").innerHTML = "Successfully added " + display_name;
+   document.getElementById("success").innerHTML = "Successfully added " + display_name[0];
  });
 }
  else {
