@@ -34,7 +34,7 @@ window.logout = logout;
 function submit() {
 var members;
 console.log("hi");
- get(child(dbRef, "/channel/" + channel_id + "/members/"), (snapshot) => {
+ get(child(dbRef, "/channel/" + channel_id + "/members/")).then((snapshot) => {
    let added_email = document.getElementById("email").value;
    let data = snapshot.val();
    members = data.members;
@@ -92,8 +92,12 @@ onAuthStateChanged(auth, (user) => {
     uid = user.uid;
     display_name = user.displayName;
     document.getElementById("username").innerHTML = user.displayName;
-    var channel_ref = ref(database, "/channel/" + channel_id);
-    onValue(channel_ref, (snapshot) => {
+    get(child(dbRef, "/channel/" + channel_id)).then((snapshot) => {console.log(snapshot.val()}).catch((error) => {
+     console.log(error);
+     document.getElementById("main").innerHTML = "<h1>Error</h1><br><p>There was an error loading this channel.</p><a href='./dashboard.html'>Return to dashboard</a>";
+    });
+    var data_ref = ref(database, "/channel/" + channel_id + "/basic_data/");
+    onValue(data_ref, (snapshot) => {
       let data = snapshot.val();
       console.log(document.getElementById("channel_name").innerHTML);
       document.getElementById("channel_name").innerHTML = data.name;
