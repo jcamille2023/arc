@@ -35,8 +35,11 @@ function email_exists(e) {
   const data = snapshot.val();
   console.log(data);
   let user_list = Object.keys(data);
+console.log(user_list);
   for(let n = 0; n < user_list.length; n++) {
+console.log(user_list[n]);
    let user_email = data[user_list[n]].basic_info.email;
+    console.log(user_email);
    if(user_email == e) {
      return data[user_list[n]].basic_info.displayName;
    }
