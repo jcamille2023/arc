@@ -43,7 +43,7 @@ console.log(user_list[n]);
    console.log(e);
    if(user_email === e) {
      console.log("Match found!");
-     return [data[user_list[n]].basic_info.displayName,user_list[n]];
+     return true;
    }
    else {
     continue
@@ -52,13 +52,36 @@ console.log(user_list[n]);
 return false;
  });
 }
+function get_uid(e) {
+ get(child(dbRef, "/users/")).then((snapshot) => {
+  const data = snapshot.val();
+  console.log(data);
+  let user_list = Object.keys(data);
+console.log(user_list);
+  for(let n = 0; n < user_list.length; n++) {
+console.log(user_list[n]);
+   let user_email = data[user_list[n]].basic_info.email;
+   let uid = user_list[n];
+    console.log(user_email);
+   console.log(e);
+   if(user_email === e) {
+     console.log("Match found!");
+     return uid;
+   }
+   else {
+    continue
+   }
+  }
+return "DNE";
+ });
+}
 window.logout = logout;
 function submit() {
 var members;
 let added_email = document.getElementById("email").value;
 console.log("hi");
-let display_name = email_exists(added_email);
- if(display_name != false) {
+console.log(email_exists(added_email));
+ if(email_exists(added_email) === true) {
  get(child(dbRef, "/channel/" + channel_id + "/members/")).then((snapshot) => {
    let data = snapshot.val();
    members = data.members;
