@@ -36,9 +36,9 @@ function email_exists(e) {
   console.log(data);
   let user_list = Object.keys(data);
   for(let n = 0; n < user_list.length; n++) {
-   let user_email = data[user_list[n]].email;
+   let user_email = data[user_list[n]].basic_info.email;
    if(user_email == e) {
-     return true;
+     return data[user_list[n]].basic_info.displayName;
    }
    else {
     return false;
@@ -51,7 +51,8 @@ function submit() {
 var members;
 let added_email = document.getElementById("email").value;
 console.log("hi");
- if(email_exists(added_email) == true) {
+let display_name = email_exists(added_email);
+ if(display_name != false) {
  get(child(dbRef, "/channel/" + channel_id + "/members/")).then((snapshot) => {
    let data = snapshot.val();
    members = data.members;
@@ -59,7 +60,7 @@ console.log("hi");
    console.log(members);
    set(ref(database, "/channel/" + channel_id + "/members/"), {members: members});
    cancel();
-   document.getElementById("success").innerHTML = "Successfully added " + document.getElementById("email").value;
+   document.getElementById("success").innerHTML = "Successfully added " + display_name;
  });
 }
  else {
