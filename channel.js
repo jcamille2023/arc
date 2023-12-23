@@ -111,11 +111,11 @@ get(child(dbRef, "/channel/" + channel_id + "/members/")).then((snapshot) => {
 	let data = snapshot.val();
 	let members_list = Object.values(data);
 	for(let n = 0; n < members_list.length; n++) {
-		let row = table.insertRow(-1);
+		var row = table.insertRow(-1);
 		// let pfp_cell = row.insertCell(-1);
-		let cell = row.insertCell(-1);
-		let name = document.createElement("p");
-		let nameNode = document.createTextNode(members_list[n]);
+		var cell = row.insertCell(-1);
+		var name = document.createElement("p");
+		var nameNode = document.createTextNode(members_list[n]);
 		name.append(nameNode);
 		cell.append(name);
 		let delete_cell = row.insertCell(-1);
