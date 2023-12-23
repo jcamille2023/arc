@@ -95,6 +95,7 @@ onAuthStateChanged(auth, (user) => {
     var channel_ref = ref(database, "/channel/" + channel_id);
     onValue(channel_ref, (snapshot) => {
       let data = snapshot.val();
+      console.log(document.getElementById("channel_name").innerHTML);
       document.getElementById("channel_name").innerHTML = data.name;
     });
     var message_ref = ref(database, "/channel/" + channel_id + "/messages/");
