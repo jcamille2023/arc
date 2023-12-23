@@ -79,9 +79,8 @@ var match;
 get(child(dbRef, "/users/")).then((snapshot) => {
 	let data = snapshot.val();
 	match = email_exists(added_email,data);
-});
-console.log(match);
- if(match === true) {
+	console.log(match);
+	if(match === true) {
  get(child(dbRef, "/channel/" + channel_id + "/members/")).then((snapshot) => {
    let data = snapshot.val();
    members = data.members;
@@ -102,6 +101,9 @@ console.log(match);
   error.style.color = "red";
   div.appendChild(error);
  }
+});
+
+ 
 }
 window.submit = submit;
 
