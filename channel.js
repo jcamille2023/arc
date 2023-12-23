@@ -126,6 +126,7 @@ onAuthStateChanged(auth, (user) => {
         box.appendChild(content);
         message_box.appendChild(box);
       }
+     message_box.scrollTop = message_box.scrollHeight - message_box.clientHeight;
     });
     // ...
   } else {
