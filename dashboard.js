@@ -79,7 +79,7 @@ onAuthStateChanged(auth, (user) => {
      email: user.email,
     };
    set(ref(database, "users/" + uid + "/basic_info"), basic_info);
-    var arcs_ref = ref(database, uid + "/channels/");
+    var arcs_ref = ref(database, "users/" + uid + "/channels/");
     onValue(arcs_ref, (snapshot) => {
      let data = snapshot.val();
      let arc_table = document.getElementById("channels-table");
