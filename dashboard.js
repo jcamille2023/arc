@@ -1,10 +1,8 @@
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut} from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
 import { getDatabase, set, ref, onValue, get, child } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
 var uid;
-var dune;
-var first_row_created = false;
-var row_filled = false;
 var user_email;
 
  const firebaseConfig = {
@@ -34,10 +32,10 @@ function logout() {
 window.logout = logout;
 function submit() {
  var channel_id = Math.floor(Math.random()*99999);
- let members = [email];   
+ let members = [user_email];   
  let name = document.getElementById("name").value;
  set(ref(database, "/channel/" + channel_id), {name: name});
- set(ref(database, "/channel/" + channel_id + "/members/"), members);
+ set(ref(database, "/channel/" + channel_id + "/members/"),{members: members});
  var url = new URL("https://jcamille2023.github.io/arc/channel");
  url.searchParams.append('channel_id', channel_id);
  console.log(url);
@@ -72,7 +70,7 @@ onAuthStateChanged(auth, (user) => {
     // https://firebase.google.com/docs/reference/js/auth.user
     console.log(user);
     uid = user.uid;
-    email = user.email;
+    user_email = user.email;
     document.getElementById("username").innerHTML = user.displayName;
     document.getElementById("user-greeting").innerHTML = "Hi, " + user.displayName + "!";
 
