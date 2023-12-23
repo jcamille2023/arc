@@ -68,11 +68,11 @@ function manage_users() {
 window.manage_users = manage_users;
 
 function send() {
-  let message_id = Math.floor(Math.random()*9999999);
+  let message_id = Math.floor(1000000 + Math.random()*9999999);
   let content = document.getElementById("messagebox").value;
   document.getElementById("messagebox").value = "";
   let date = new Date();
-  let msg_date = String(date.getFullYear()) + String(date.getMonth()) + String(date.getDate()) + String(date.getHours()) + String(date.getMinutes()) + String(date.getSeconds());
+  let msg_date = String(date.getFullYear()) + String(date.getMonth()+1) + String(date.getDate()) + String(date.getHours()) + String(date.getMinutes()) + String(date.getSeconds());
   set(ref(database, "/channel/" + channel_id + "/messages/" + msg_date + message_id), {
     creator: uid,
     display_name: display_name,
@@ -108,7 +108,7 @@ onAuthStateChanged(auth, (user) => {
       for(let n = 0; n < msg_list.length; n++) {
         let message = data[msg_list[n]];
         let date = new Date(message.date);
-        let datetime = String(date.getMonth()) + String(date.getDate()) + String(date.getFullYear()) + " at " + String(date.getHours()) + ":" + String(date.getMinutes());
+        let datetime = String(date.getMonth()+1) + String(date.getDate()) + String(date.getFullYear()) + " at " + String(date.getHours()) + ":" + String(date.getMinutes());
         let box = document.createElement("div");
         box.setAttribute("class","message");
         let username_entry = document.createElement("h4");
