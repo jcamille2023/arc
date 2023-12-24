@@ -195,11 +195,13 @@ onAuthStateChanged(auth, (user) => {
         let datetime_entry = document.createElement("p");
         let dateNode = document.createTextNode(datetime);
         datetime_entry.appendChild(dateNode);
+	box.appendChild(datetime_entry);
         box.appendChild(username_entry);
         let content = document.createElement("p");
         let textNode2 = document.createTextNode(message.content);
         content.appendChild(textNode2);
         box.appendChild(content);
+	
         message_box.appendChild(box);
       }
      message_box.scrollTop = message_box.scrollHeight - message_box.clientHeight;
