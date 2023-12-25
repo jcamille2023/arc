@@ -3,11 +3,10 @@ import { getAuth, onAuthStateChanged, signOut} from "https://www.gstatic.com/fir
 import { getDatabase, set, ref, onValue, get, child } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-messaging.js";
 var uid;
+var msg_date;
 var new_user_uid;
 var display_name;
 var channel_name;
-var date_win;
-window.date_win = date_win;
 const searchParams = new URLSearchParams(window.location.search);
 const channel_id = searchParams.get('channel_id');
  const firebaseConfig = {
@@ -123,7 +122,7 @@ get(child(dbRef, "/channel/" + channel_id + "/members/")).then((snapshot) => {
 		name.append(nameNode);
 		cell.append(name);
 		let delete_cell = row.insertCell(-1);
-		let delete_button = document.createElement("button")
+		let delete_button = document.createElement("button");
 		let delete_icon = document.createElement("img");
 		delete_icon.setAttribute("src","./assets/delete_icon.jpg");
 		delete_button.setAttribute("onclick","delete(" + members_list[n] + ")");
@@ -139,14 +138,15 @@ function send() {
   message_id += 1000000;
   let content = document.getElementById("messagebox").value;
   document.getElementById("messagebox").value = "";
-  let date = new Date();
-  let msg_date = String(date.getFullYear()) + String(date.getMonth()+1) + String(date.getDate()) + String(date.getHours()) + String(date.getMinutes()) + String(date.getSeconds());
-  set(ref(database, "/channel/" + channel_id + "/messages/" + msg_date + message_id), {
-    creator: uid,
-    display_name: display_name,
-    content: content,
-    date: date,
-  });
+  msg_date = new Date(); 
+  console.log(msg_date);
+  let send_date = String(msg_date.getFullYear()) + String(msg_date.getMonth()+1) + String(msg_date.getDate()) + String(msg_date.getHours()) + String(msg_date.getMinutes()) + String(msg_date.getSeconds());
+  let data = {
+	  creator: uid,
+	  content: content,
+	  date: send_date,
+  };
+  set(ref(database, "/channel/" + channel_id + "/messages/" + msg_date + message_id), data);
 }
 window.send = send;
 
@@ -185,32 +185,30 @@ onAuthStateChanged(auth, (user) => {
        Number(msg_list[n]);
       }
       msg_list.sort((a,b) => a-b);
+      
       for(let n = 0; n < msg_list.length; n++) {
         let message = data[msg_list[n]];
-	console.log(message);
-	console.log(message.date);
-	date_win = message.date;
+	get(child(dbRef, "/users/" + message.uid + "/basic_info")).then((snapshot2) => {
+	let user_data = snapshot2.val();
         let date = new Date(message.date);
-        let datetime = "on " + String(date.getMonth()+1) + "/" + String(date.getDate()) + "/" + String(date.getFullYear()) + " at " + String(date.getHours()) + ":" + String(date.getMinutes());
+        let datetime = " | on " + String(date.getMonth()+1) + "/" + String(date.getDate()) + "/" + String(date.getFullYear()) + " at " + String(date.getHours()) + ":" + String(date.getMinutes());
         let box = document.createElement("div");
         box.setAttribute("class","message");
         let username_entry = document.createElement("h4");
-        let textNode = document.createTextNode(message.display_name);
+        let textNode = document.createTextNode(user_data.displayName + datetime);
         username_entry.appendChild(textNode);
-        let datetime_entry = document.createElement("p");
-        let dateNode = document.createTextNode(datetime);
-        datetime_entry.appendChild(dateNode);
         box.appendChild(username_entry);
-	box.appendChild(datetime_entry);
         let content = document.createElement("p");
         let textNode2 = document.createTextNode(message.content);
         content.appendChild(textNode2);
         box.appendChild(content);
-	
         message_box.appendChild(box);
+	});
       }
+	
      message_box.scrollTop = message_box.scrollHeight - message_box.clientHeight;
     });
+	    
     // ...
   } else {
     window.location.href = "index.html";
