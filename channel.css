@@ -5,7 +5,7 @@ div#header {
 div#msg-contain {
     overflow: auto;
     color: white;
-    max-height:440px;
+    max-height:370px;
     
 }
 
@@ -60,3 +60,8 @@ div#wrapper {
   
 }
 
+@media (min-width: 320px) {
+  #messagelog-row {
+    height: 0px;
+  }
+}
