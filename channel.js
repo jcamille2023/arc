@@ -139,12 +139,13 @@ function send() {
   let content = document.getElementById("messagebox").value;
   document.getElementById("messagebox").value = "";
   msg_date = new Date(); 
-  console.log(msg_date);
+  console.log(msg_date); 
+  let msg_date_2 = String(msg_date);
   let send_date = String(msg_date.getFullYear()) + String(msg_date.getMonth()+1) + String(msg_date.getDate()) + String(msg_date.getHours()) + String(msg_date.getMinutes()) + String(msg_date.getSeconds());
   let data = {
 	  creator: uid,
 	  content: content,
-	  date: msg_date,
+	  date: msg_date_2,
   };
   set(ref(database, "/channel/" + channel_id + "/messages/" + send_date + message_id), data);
 }
