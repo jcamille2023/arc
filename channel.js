@@ -144,9 +144,9 @@ function send() {
   let data = {
 	  creator: uid,
 	  content: content,
-	  date: send_date,
+	  date: msg_date,
   };
-  set(ref(database, "/channel/" + channel_id + "/messages/" + msg_date + message_id), data);
+  set(ref(database, "/channel/" + channel_id + "/messages/" + send_date + message_id), data);
 }
 window.send = send;
 
@@ -188,7 +188,8 @@ onAuthStateChanged(auth, (user) => {
       
       for(let n = 0; n < msg_list.length; n++) {
         let message = data[msg_list[n]];
-	get(child(dbRef, "/users/" + message.uid + "/basic_info")).then((snapshot2) => {
+	get(child(dbRef, "/users/" + message.creator + "/basic_info")).then((snapshot2) => {
+	console.log(message.creator);
 	let user_data = snapshot2.val();
         let date = new Date(message.date);
         let datetime = " | on " + String(date.getMonth()+1) + "/" + String(date.getDate()) + "/" + String(date.getFullYear()) + " at " + String(date.getHours()) + ":" + String(date.getMinutes());
