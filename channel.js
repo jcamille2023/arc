@@ -7,7 +7,7 @@ var new_user_uid;
 var display_name;
 var channel_name;
 var date_win;
-window.date = date;
+window.date_win = date_win;
 const searchParams = new URLSearchParams(window.location.search);
 const channel_id = searchParams.get('channel_id');
  const firebaseConfig = {
