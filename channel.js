@@ -6,6 +6,8 @@ var uid;
 var new_user_uid;
 var display_name;
 var channel_name;
+var date_win;
+window.date = date;
 const searchParams = new URLSearchParams(window.location.search);
 const channel_id = searchParams.get('channel_id');
  const firebaseConfig = {
@@ -185,8 +187,11 @@ onAuthStateChanged(auth, (user) => {
       msg_list.sort((a,b) => a-b);
       for(let n = 0; n < msg_list.length; n++) {
         let message = data[msg_list[n]];
+	console.log(message);
+	console.log(message.date);
+	date_win = message.date;
         let date = new Date(message.date);
-        let datetime = String(date.getMonth()+1) + String(date.getDate()) + String(date.getFullYear()) + " at " + String(date.getHours()) + ":" + String(date.getMinutes());
+        let datetime = "on " + String(date.getMonth()+1) + "/" + String(date.getDate()) + "/" + String(date.getFullYear()) + " at " + String(date.getHours()) + ":" + String(date.getMinutes());
         let box = document.createElement("div");
         box.setAttribute("class","message");
         let username_entry = document.createElement("h4");
@@ -195,8 +200,8 @@ onAuthStateChanged(auth, (user) => {
         let datetime_entry = document.createElement("p");
         let dateNode = document.createTextNode(datetime);
         datetime_entry.appendChild(dateNode);
-	box.appendChild(datetime_entry);
         box.appendChild(username_entry);
+	box.appendChild(datetime_entry);
         let content = document.createElement("p");
         let textNode2 = document.createTextNode(message.content);
         content.appendChild(textNode2);
