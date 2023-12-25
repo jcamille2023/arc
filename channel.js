@@ -134,8 +134,8 @@ get(child(dbRef, "/channel/" + channel_id + "/members/")).then((snapshot) => {
 window.manage_users = manage_users;
 
 function send() {
-  let message_id = Math.floor(Math.random()*9999999);
-  message_id += 1000000;
+  let message_id = Math.floor(Math.random()*1000000);
+  message_id = message_id + 1000000;
   let content = document.getElementById("messagebox").value;
   document.getElementById("messagebox").value = "";
   msg_date = new Date(); 
