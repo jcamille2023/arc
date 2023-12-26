@@ -133,6 +133,16 @@ get(child(dbRef, "/channel/" + channel_id + "/members/")).then((snapshot) => {
 }
 window.manage_users = manage_users;
 
+function requestPermission() {
+  console.log('Requesting permission...');
+  Notification.requestPermission().then((permission) => {
+    if (permission === 'granted') {
+      console.log('Notification permission granted.');
+      let push_button = document.getElementById("arc-push");
+      push_button.remove();
+    }
+	  
+
 function send() {
   let message_id = Math.floor(Math.random()*1000000);
   message_id = message_id + 1000000;
@@ -153,12 +163,20 @@ window.send = send;
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
+    getToken(messaging, {vapidKey: "BFN_4xdvMbKPLlLtMDMiD5gyRnO7dZVR-LQArRYxwuOn3dnZbF_XUbaw3g72p4-NsCyPE-xhYG8YpWHJ0r3goBk"}).then((currentToken) => {
+	if(currentToken) {
+		console.log(currentToken);
+	}    
+	else {
+		console.log("no token");    
+	}
+    });
     // User is signed in, see docs for a list of available properties
     // https://firebase.google.com/docs/reference/js/auth.user
     onMessage(messaging, (payload) => {
   console.log('Message received. ', payload);
   // ...
-});
+}).catch((err) => {console.log(err)});
     console.log(user);
     uid = user.uid;
     display_name = user.displayName;
