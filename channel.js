@@ -179,7 +179,7 @@ onAuthStateChanged(auth, (user) => {
     onMessage(messaging, (payload) => {
   console.log('Message received. ', payload);
   // ...
-}).catch((err) => {console.log(err)});
+});
     console.log(user);
     uid = user.uid;
     display_name = user.displayName;
