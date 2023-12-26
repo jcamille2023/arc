@@ -193,19 +193,6 @@ window.send = send;
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    onMessage(messaging, (payload) => {
-  console.log('Foreground message received:', payload);
-
-  // Customize the way you handle the message when the app is in the foreground
-  // For example, display a notification, update UI, etc.
-  const notificationTitle = payload.notification.title;
-  const notificationOptions = {
-    body: payload.notification.body,
-    icon: 'icon.png', // Customize with the path to your app's icon
-  };
-
-  self.registration.showNotification(notificationTitle, notificationOptions);
-});
     // User is signed in, see docs for a list of available properties
     // https://firebase.google.com/docs/reference/js/auth.user
     console.log(user);
