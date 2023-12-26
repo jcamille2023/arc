@@ -182,6 +182,7 @@ function send() {
   let send_date = String(msg_date.getFullYear()) + String(msg_date.getMonth()+1) + String(msg_date.getDate()) + String(msg_date.getHours()) + String(msg_date.getMinutes()) + String(msg_date.getSeconds());
   let data = {
 	  creator: uid,
+	  displayName: display_name,
 	  content: content,
 	  date: msg_date_2,
 	  channel_id: channel_id,
