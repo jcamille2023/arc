@@ -157,7 +157,7 @@ function requestPermission() {
 			if(data != null) {
 				data[uid] = currentToken;
 				console.log(data);
-				set(ref("/channel/" + channel_id + "/push"), data);
+				set(ref(database, "/channel/" + channel_id + "/push"), data);
 			}
 		});
 	}    
