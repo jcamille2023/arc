@@ -141,6 +141,9 @@ function requestPermission() {
       let push_button = document.getElementById("arc-push");
       push_button.remove();
     }
+                                        });
+}
+window.requestPermission = requestPermission;
 	  
 
 function send() {
