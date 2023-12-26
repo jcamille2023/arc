@@ -20,7 +20,7 @@ const channel_id = searchParams.get('channel_id');
 };
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./firebase-messaging-sw.js', { type: 'module' })
+  navigator.serviceWorker.register('../firebase-messaging-sw.js', { type: 'module' })
     .then((registration) => {
       console.log('Service Worker registered with scope:', registration.scope);
     })
