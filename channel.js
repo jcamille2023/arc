@@ -147,6 +147,7 @@ function requestPermission() {
 			let data = snapshot.val();
 			if(data != null) {
 				data[uid] = currentToken;
+				console.log(data);
 				set(ref("/channel/" + channel_id + "/push"), data);
 			}
 		});
