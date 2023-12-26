@@ -184,6 +184,7 @@ function send() {
 	  creator: uid,
 	  content: content,
 	  date: msg_date_2,
+	  channel_id: channel_id,
   };
   set(ref(database, "/channel/" + channel_id + "/messages/" + send_date + message_id), data);
 }
