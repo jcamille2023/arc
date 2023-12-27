@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut} from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
-import { getDatabase, set, ref, onValue, get, child } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
+import { getDatabase, set, ref, onValue, get, child, update } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-messaging.js";
 var uid;
 var msg_date;
@@ -156,12 +156,12 @@ function requestPermission() {
 	getToken(messaging, {vapidKey: "BFN_4xdvMbKPLlLtMDMiD5gyRnO7dZVR-LQArRYxwuOn3dnZbF_XUbaw3g72p4-NsCyPE-xhYG8YpWHJ0r3goBk"}).then((currentToken) => {
 	if(currentToken) {
 		console.log(currentToken);
-		get(child(dbRef, "/channel/" + channel_id + "/push")).then((snapshot) => {
+		get(child(dbRef, "/push/tokens")).then((snapshot) => {
 			let data = snapshot.val();
 			if(data != null) {
-				data[uid] = currentToken;
+				data[currentToken] = channel_id;
 				console.log(data);
-				set(ref(database, "/channel/" + channel_id + "/push"), data);
+				set(ref(database, "/push/tokens"), data);
 			}
 		});
 	}    
