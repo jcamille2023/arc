@@ -228,7 +228,7 @@ onAuthStateChanged(auth, (user) => {
 	    let data = snapshot.val();
 	    console.log(data);
 	    let button = document.getElementById("arc-push");
-	    if (data['0'] == uid) {
+	    if (data[0] == uid) {
 		    button.setAttribute("onclick", "enablePush()");
 	    } 
 	    else {
