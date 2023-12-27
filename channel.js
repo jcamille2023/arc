@@ -226,6 +226,7 @@ onAuthStateChanged(auth, (user) => {
 	});
     get(child(dbRef, '/channel/' + channel_id + '/members/members')).then((snapshot) => { // Reference to Arc Push
 	    let data = snapshot.val();
+	    console.log(data);
 	    let button = document.getElementById("arc-push");
 	    if (data['0'] == uid) {
 		    button.setAttribute("onclick", "enablePush()");
