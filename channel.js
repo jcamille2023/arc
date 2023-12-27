@@ -142,13 +142,17 @@ get(child(dbRef, "/channel/" + channel_id + "/members/")).then((snapshot) => {
 }
 window.manage_users = manage_users;
 
+
 function requestPermission() {
   console.log('Requesting permission...');
   Notification.requestPermission().then((permission) => {
     if (permission === 'granted') {
       console.log('Notification permission granted.');
-      let push_button = document.getElementById("arc-push");
-      push_button.remove();
+	let push_button = document.getElementById("arc-push");
+      if (push_button) {
+      	
+      	push_button.remove();
+      }
 	getToken(messaging, {vapidKey: "BFN_4xdvMbKPLlLtMDMiD5gyRnO7dZVR-LQArRYxwuOn3dnZbF_XUbaw3g72p4-NsCyPE-xhYG8YpWHJ0r3goBk"}).then((currentToken) => {
 	if(currentToken) {
 		console.log(currentToken);
@@ -168,8 +172,23 @@ function requestPermission() {
     }
                                         });
 }
-window.requestPermission = requestPermission;
-	  
+window.requestPermission = requestPermission; 
+
+function enablePush() {
+	let description = "What is Arc Push?\n"+
+		"Arc Push is a service that allows Arc to send push notifications whenever messages are sent in a channel.\n"+
+		"Arc Push must be enabled by you (the channel owner) in order for other users to send notifications."+
+		"You do not have to receive notifications yourself because you are not required to confirm notifications when Arc Push"+
+		"is enabled.\n"+
+		"Press OK to enable Arc Push or press Cancel to revert the process.";
+	let enabled = confirm(description);
+	if (enabled) {
+		set(ref(database, "/push/channels/" + channel_id), {push: true});
+		document.getElementById("enable-push").remove();
+		requestPermission();
+	} 
+}
+window.enablePush = enablePush;
 
 function send() {
   let message_id = Math.floor(Math.random()*1000000);
@@ -205,6 +224,17 @@ onAuthStateChanged(auth, (user) => {
 		console.log(error);
      document.getElementById("main").innerHTML = "<h1>Error</h1><br><p>There was an error loading this channel.</p><a href='./dashboard.html'>Return to dashboard</a>";
 	});
+    get(child(dbRef, '/channel/' + channel_id + '/members')).then((snapshot) => { // Reference to Arc Push
+	    let data = snapshot.val();
+	    let button = document.getElementById("arc-push");
+	    if (data['0'] == uid) {
+		    button.setAttribute("onclick", "enablePush()");
+	    } 
+	    else {
+		button.style.visibility = "hidden";
+	    }
+	    
+    });
     var data_ref = ref(database, "/channel/" + channel_id + "/basic_data/");
     onValue(data_ref, (snapshot) => {
       let data = snapshot.val();
@@ -244,9 +274,21 @@ onAuthStateChanged(auth, (user) => {
 	message_box.scrollTop = message_box.scrollHeight - message_box.clientHeight;
 	});
       }
-	
-     
     });
+	var push_ref = ref(database, "/push/channels/" + channel_id);
+	onValue(push_ref, (snapshot) => {
+		let data = snapshot.val();
+		if (data != null) {
+			get(child(dbRef, "/channel/" + channel_id + "/push")).then((snapshot) => {
+				let button = document.getElementById("arc-push");
+				let data2 = snapshot.val();
+				if (!(uid in data2)) {
+					button.style.visibility = "visible";
+					button.innerHTML = "Enable notifications";
+				}
+			});
+		}
+	});
 	    
     // ...
   } else {
