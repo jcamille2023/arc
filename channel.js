@@ -177,14 +177,13 @@ window.requestPermission = requestPermission;
 function enablePush() {
 	let description = "What is Arc Push?\n"+
 		"Arc Push is a service that allows Arc to send push notifications whenever messages are sent in a channel.\n"+
-		"Arc Push must be enabled by you (the channel owner) in order for other users to send notifications."+
+		"Arc Push must be enabled by you (the channel owner) in order for other users to send notifications. "+
 		"You do not have to receive notifications yourself because you are not required to confirm notifications when Arc Push"+
-		"is enabled.\n"+
+		" is enabled.\n"+
 		"Press OK to enable Arc Push or press Cancel to revert the process.";
 	let enabled = confirm(description);
 	if (enabled) {
 		set(ref(database, "/push/channels/" + channel_id), {push: true});
-		document.getElementById("enable-push").remove();
 		requestPermission();
 	} 
 }
