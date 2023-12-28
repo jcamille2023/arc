@@ -283,7 +283,7 @@ onAuthStateChanged(auth, (user) => {
 			get(child(dbRef, "/channel/" + channel_id + "/push")).then((snapshot) => {
 				let button = document.getElementById("arc-push");
 				let data2 = snapshot.val();
-				if (!(uid in data2)) {
+				if (!(uid in Object.values(data2))) {
 					button.style.visibility = "visible";
 					button.innerHTML = "Enable notifications";
 				}
