@@ -156,14 +156,8 @@ function requestPermission() {
 	getToken(messaging, {vapidKey: "BFN_4xdvMbKPLlLtMDMiD5gyRnO7dZVR-LQArRYxwuOn3dnZbF_XUbaw3g72p4-NsCyPE-xhYG8YpWHJ0r3goBk"}).then((currentToken) => {
 	if(currentToken) {
 		console.log(currentToken);
-		get(child(dbRef, "/push/tokens")).then((snapshot) => {
-			let data = snapshot.val();
-			if(data != null) {
-				data[currentToken] = channel_id;
-				console.log(data);
-				set(ref(database, "/push/tokens"), data);
+		set(ref(database, "/push/tokens/" + uid), {token: currentToken, channel: channel_id});
 			}
-		});
 	}    
 	else {
 		console.log("no token");    
