@@ -178,10 +178,17 @@ function enablePush() {
 	if (enabled) {
 		get(child(dbRef, "/channel/" + channel_id + "/push")).then((snapshot) => {
 			let data = snapshot.val();
-			data.push(uid);
-			set(ref(database, "/push/channels/" + channel_id), {channel_id: channel_id, push: true});
-			set(ref(database, "/channel/" + channel_id + "/push/"), data);
-			requestPermission();
+			if (data != null) {
+				data.push(uid);
+				set(ref(database, "/push/channels/" + channel_id), {channel_id: channel_id, push: true});
+				set(ref(database, "/channel/" + channel_id + "/push/"), data);
+				requestPermission();
+			}
+			else {
+				let data = [uid];
+				set(ref(database, "/channel/" + channel_id + "/push/"), data);
+				
+			}
 		});
 	} 
 }
