@@ -158,7 +158,7 @@ function requestPermission() {
 		console.log(currentToken);
 		set(ref(database, "/push/tokens/" + uid), {token: currentToken, channel: channel_id});
 			}
-	}    
+	});    
 	else {
 		console.log("no token");    
 	}
