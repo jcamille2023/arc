@@ -221,7 +221,7 @@ function send() {
 	}
 	let hours = msg_date.getHours();
 	if(hours < 10) {
-		hours (month);
+		String(hours);
 		hours = "0" + hours;
 	}
 	else {
