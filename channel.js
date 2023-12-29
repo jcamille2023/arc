@@ -203,7 +203,47 @@ function send() {
   	msg_date = new Date(); 
   	console.log(msg_date); 
   	let msg_date_2 = String(msg_date);
-  	let send_date = String(msg_date.getFullYear()) + String(msg_date.getMonth()+1) + String(msg_date.getDate()) + String(msg_date.getHours()) + String(msg_date.getMinutes()) + String(msg_date.getSeconds());
+	let month = msg_date.getMonth();
+	if(month < 10) {
+		String(month);
+		month = "0" + month;
+	}
+	else {
+		String(month);
+	}
+	let day = msg_date.getDate();
+	if(day < 10) {
+		String(day);
+		day = "0" + day;
+	}
+	else {
+		String(day);
+	}
+	let hours = msg_date.getHours();
+	if(hours < 10) {
+		hours (month);
+		hours = "0" + hours;
+	}
+	else {
+		String(hours);
+	}
+	let minutes = msg_date.getMinutes();
+	if(minutes < 10) {
+		String(minutes);
+		minutes = "0" + minutes;
+	}
+	else {
+		String(minutes);
+	}
+	let seconds = msg_date.getSeconds();
+	if(seconds < 10) {
+		String(seconds);
+		seconds = "0" + seconds;
+	}
+	else {
+		String(seconds);
+	}
+  	let send_date = String(msg_date.getFullYear()) + month + day + hours + minutes + seconds;
   	let data = {
 	  channel_name: channel_name,
 	  creator: uid,
