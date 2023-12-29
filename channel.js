@@ -18,16 +18,6 @@ const channel_id = searchParams.get('channel_id');
   appId: "1:1073428960179:web:c61897786f1d2ba05131c6",
   measurementId: "G-47T814R2SK"
 };
-
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('../firebase-messaging-sw.js', { type: 'module' })
-    .then((registration) => {
-      console.log('Service Worker registered with scope:', registration.scope);
-    })
-    .catch((error) => {
-      console.error('Service Worker registration failed:', error);
-    });
-}
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const database = getDatabase(app);
