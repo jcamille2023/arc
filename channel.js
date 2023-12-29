@@ -195,23 +195,28 @@ function enablePush() {
 window.enablePush = enablePush;
 
 function send() {
-  let message_id = Math.floor(Math.random()*1000000);
-  message_id = message_id + 1000000;
-  let content = document.getElementById("messagebox").value;
-  document.getElementById("messagebox").value = "";
-  msg_date = new Date(); 
-  console.log(msg_date); 
-  let msg_date_2 = String(msg_date);
-  let send_date = String(msg_date.getFullYear()) + String(msg_date.getMonth()+1) + String(msg_date.getDate()) + String(msg_date.getHours()) + String(msg_date.getMinutes()) + String(msg_date.getSeconds());
-  let data = {
+  get(child(dbRef, "/push/channels/" + channel_id)).then((snapshot) => {
+  	let message_id = Math.floor(Math.random()*1000000);
+  	message_id = message_id + 1000000;
+  	let content = document.getElementById("messagebox").value;
+  	document.getElementById("messagebox").value = "";
+  	msg_date = new Date(); 
+  	console.log(msg_date); 
+  	let msg_date_2 = String(msg_date);
+  	let send_date = String(msg_date.getFullYear()) + String(msg_date.getMonth()+1) + String(msg_date.getDate()) + String(msg_date.getHours()) + String(msg_date.getMinutes()) + String(msg_date.getSeconds());
+  	let data = {
 	  channel_name: channel_name,
 	  creator: uid,
 	  displayName: display_name,
 	  content: content,
 	  date: msg_date_2,
 	  channel_id: channel_id,
-  };
+  	};
   set(ref(database, "/channel/" + channel_id + "/messages/" + send_date + message_id), data);
+	  if(snapshot.val()) {
+		  set(ref(database, "/push/messages/" + send_date + message_id),data);
+	  }
+  });
 }
 window.send = send;
 
@@ -288,12 +293,11 @@ onAuthStateChanged(auth, (user) => {
 			get(child(dbRef, "/channel/" + channel_id + "/push")).then((snapshot) => {
 				let button = document.getElementById("arc-push");
 				let data2 = snapshot.val();
-				if (data != null) {
-				if (!(uid in Object.values(data2))) {
-					button.style.visibility = "visible";
-					button.innerHTML = "Enable notifications";
-				}
-				}
+				console.log(data2);
+				if (data2 != null && !(uid in Object.values(data2)) && data2[0] != uid) {
+						button.style.visibility = "visible";
+						button.innerHTML = "Enable notifications";
+					}
 			});
 		}
 	});
