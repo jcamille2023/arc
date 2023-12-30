@@ -104,8 +104,6 @@ onAuthStateChanged(auth, (user) => {
        let arc = document.createElement("div"); // add to arc_table
        
        arc.style.padding = "7px";
-       arc.style.margin = "15px";
-       arc.style.width = "20%";
        arc.style.background = "black";
        
        let arc_container = document.createElement("div"); // add to arc
