@@ -101,23 +101,26 @@ onAuthStateChanged(auth, (user) => {
       let arc_number = Object.keys(data)[n];
       get(child(dbRef, '/channel/' + arc_number + "/basic_data")).then((snapshot) => {
        let arc_data = snapshot.val()
-       let arc = arc_table.insertRow(-1);
-      let arc_cell = arc.insertCell(-1);
-      arc_cell.style.padding = "15px";
-      arc_cell.style.background = "black";
-      let arc_container = document.createElement("div");
-      let arc_name = document.createElement("h3");
-      arc_name.style.color = "white";
-  
-      let join_arc = document.createElement("button");
-      join_arc.innerHTML = "Go to arc";
-      join_arc.setAttribute("onclick","join(" + arc_number + ")");
-      let arc_name_node = document.createTextNode(arc_data.name);
-      arc_name.appendChild(arc_name_node);
-      arc_container.appendChild(arc_name);
-      arc_container.appendChild(join_arc);
-      arc_cell.appendChild(arc_container);
-      arc.appendChild(arc_cell);
+       let arc = document.createElement("div"); // add to arc_table
+       
+       arc.style.padding = "15px";
+       arc.style.background = "black";
+       let arc_container = document.createElement("div"); // add to arc
+       let arc_name = document.createElement("h3"); // add to arc container
+       let arc_name_node = document.createTextNode(arc_data.name); // add to arc_name
+       
+       arc_name.style.color = "white";
+       let join_arc = document.createElement("button"); // add to arc container
+       join_arc.innerHTML = "Go to arc";
+       join_arc.setAttribute("onclick","join(" + arc_number + ")");
+
+       arc_name.appendChild(arc_name_node);
+       arc_container.appendChild(arc_name);
+       arc_container.appendChild(join_arc);
+       arc_table.appendChild(arc);
+      
+
+       
       });
       
      }
