@@ -111,19 +111,18 @@ function manage_users() {
 get(child(dbRef, "/channel/" + channel_id + "/members/")).then((snapshot) => {
 	let table = document.getElementById("members_list");
 	let data = snapshot.val();
-	let members_list = Object.values(data);
-	for(let n = 0; n < members_list.length; n++) {
+	for(let n = 0; n < data.length; n++) {
 		var cell = document.createElement("div");
 		table.appendChild(cell);
 		var name = document.createElement("p");
 		name.style.color = "white";
-		var nameNode = document.createTextNode(members_list[n]);
+		var nameNode = document.createTextNode(data[n]);
 		name.append(nameNode);
 		cell.append(name);
 		let delete_button = document.createElement("button");
 		let delete_icon = document.createElement("img");
 		delete_icon.setAttribute("src","./assets/delete_icon.jpg");
-		delete_button.setAttribute("onclick","delete(" + members_list[n] + ")");
+		delete_button.setAttribute("onclick","delete(" + data[n] + ")");
 		delete_button.appendChild(delete_icon);
 		cell.appendChild(delete_button);
 	}
