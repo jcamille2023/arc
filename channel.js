@@ -106,27 +106,26 @@ function manage_users() {
   '<button onclick="submit()">Submit</button>'+
   '<button onclick="cancel()">Cancel</button>'+
   '<div><h1>Members</h1>'+
-'<table id="members_list"><tbody></tbody></table></div>'+
+'<div id="members_list"></div></div>'+
   '</div>';
 get(child(dbRef, "/channel/" + channel_id + "/members/")).then((snapshot) => {
 	let table = document.getElementById("members_list");
 	let data = snapshot.val();
 	let members_list = Object.values(data);
 	for(let n = 0; n < members_list.length; n++) {
-		var row = table.insertRow(-1);
-		// let pfp_cell = row.insertCell(-1);
-		var cell = row.insertCell(-1);
+		var cell = document.createElement("div");
+		table.appendChild(cell);
 		var name = document.createElement("p");
+		name.style.color = "white";
 		var nameNode = document.createTextNode(members_list[n]);
 		name.append(nameNode);
 		cell.append(name);
-		let delete_cell = row.insertCell(-1);
 		let delete_button = document.createElement("button");
 		let delete_icon = document.createElement("img");
 		delete_icon.setAttribute("src","./assets/delete_icon.jpg");
 		delete_button.setAttribute("onclick","delete(" + members_list[n] + ")");
 		delete_button.appendChild(delete_icon);
-		delete_cell.appendChild(delete_button);
+		cell.appendChild(delete_button);
 	}
 });
 }
