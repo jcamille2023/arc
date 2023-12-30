@@ -2,18 +2,6 @@ div#header {
     background-color: black;
 }
 
-div#msg-contain {
-    overflow: auto;
-    color: white;
-    max-height:370px;
-    
-}
-
-table#channels-table {
-    bottom: 0;
-    position: fixed;
-}
-
 section#open-section {
     color: white;
 }
@@ -36,12 +24,12 @@ div#wrapper {
 .container {
   position: relative;
   margin: 30px;
-
+  height:100%
 }
 
 .box {
   width: 100%;
-  /* height: 92%; */
+  height: 92%;
   position: absolute;
   top: 0;
   left: 0;
@@ -55,13 +43,19 @@ div#wrapper {
   height: 90%
 }
 
-#manage_users > div {
+#add_arcs > div {
     background-color: black;
   
 }
 
-@media (min-width: 320px) {
-  #messagelog-row {
-    height: 0px;
-  }
+#channels-table {
+  display: grid;
+  width:100%;
+  height:87%;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+#channels-table > div {
+ margin: 5px;
+ text-align: center;
 }
