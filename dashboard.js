@@ -103,8 +103,10 @@ onAuthStateChanged(auth, (user) => {
        let arc_data = snapshot.val()
        let arc = document.createElement("div"); // add to arc_table
        
-       arc.style.padding = "15px";
+       arc.style.padding = "7px";
+       arc.style.margin = "15px";
        arc.style.background = "black";
+       
        let arc_container = document.createElement("div"); // add to arc
        let arc_name = document.createElement("h3"); // add to arc container
        let arc_name_node = document.createTextNode(arc_data.name); // add to arc_name
