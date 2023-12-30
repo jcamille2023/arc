@@ -117,6 +117,7 @@ onAuthStateChanged(auth, (user) => {
        arc_name.appendChild(arc_name_node);
        arc_container.appendChild(arc_name);
        arc_container.appendChild(join_arc);
+       arc.appendChild(arc_container);
        arc_table.appendChild(arc);
       
 
