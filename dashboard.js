@@ -105,6 +105,7 @@ onAuthStateChanged(auth, (user) => {
        
        arc.style.padding = "7px";
        arc.style.margin = "15px";
+       arc.style.width = "20%";
        arc.style.background = "black";
        
        let arc_container = document.createElement("div"); // add to arc
@@ -121,13 +122,8 @@ onAuthStateChanged(auth, (user) => {
        arc_container.appendChild(join_arc);
        arc.appendChild(arc_container);
        arc_table.appendChild(arc);
-      
-
-       
       });
-      
      }
-
     });
    }
     // ...
