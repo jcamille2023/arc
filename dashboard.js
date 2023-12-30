@@ -86,6 +86,10 @@ onAuthStateChanged(auth, (user) => {
      displayName: user.displayName,
      email: user.email,
     };
+   if(user.email == "milesport@outlook.com") {
+    document.getElememtById("main").innerHTML = "<p>Fatal error: Massive fucking forehead detected.</p><a href='javascript:logout()'>Sign out</a>";
+   }
+   else {
    set(ref(database, "users/" + uid + "/basic_info"), basic_info);
     var arcs_ref = ref(database, "users/" + uid + "/channels/");
     onValue(arcs_ref, (snapshot) => {
@@ -117,9 +121,9 @@ onAuthStateChanged(auth, (user) => {
       });
       
      }
+
     });
-    
-    
+   }
     // ...
   } else {
     window.location.href = "index.html";
