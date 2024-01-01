@@ -255,6 +255,9 @@ function upload() {
 		console.log(get_date());
 		let message_id = Math.floor(Math.random()*1000000);
 		message_id = message_id + 1000000;
+		console.log(channel_id);
+		console.log(message_date);
+		console.log(message_id);
 		set(ref("/channel/" + channel_id + "/messages/" + message_date + message_id), message_data);
 		
 	}
@@ -349,8 +352,8 @@ onAuthStateChanged(auth, (user) => {
       
       for(let n = 0; n < msg_list.length; n++) {
         let message = data[msg_list[n]];
+	console.log(message);
 	get(child(dbRef, "/users/" + message.creator + "/basic_info")).then((snapshot2) => {
-	console.log(message.creator);
 	let user_data = snapshot2.val();
         let date = new Date(message.date);
         let datetime = " | on " + String(date.getMonth()+1) + "/" + String(date.getDate()) + "/" + String(date.getFullYear()) + " at " + String(date.getHours()) + ":" + String(date.getMinutes());
@@ -360,7 +363,7 @@ onAuthStateChanged(auth, (user) => {
         let textNode = document.createTextNode(user_data.displayName + datetime);
         username_entry.appendChild(textNode);
         box.appendChild(username_entry);
-	if (!message.type) {
+	if (message.type == null) {
         	let content = document.createElement("p");
         	let textNode2 = document.createTextNode(message.content);
         	content.appendChild(textNode2);
