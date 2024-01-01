@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut} from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
-import { getDatabase, set, ref, onValue, get, child, update } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
+import { getDatabase, set, ref, onValue, get, child, update, onChildAdded } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-messaging.js";
 var uid;
 var msg_date;
@@ -312,34 +312,8 @@ onAuthStateChanged(auth, (user) => {
     display_name = user.displayName;
     document.getElementById("username").innerHTML = user.displayName;
    get(child(dbRef, '/channel/' + channel_id + '/messages')).then((snapshot) => {
-		return snapshot.val();
-	}).catch((error) => {
-		console.log(error);
-     document.getElementById("main").innerHTML = "<h1>Error</h1><br><p>There was an error loading this channel.</p><a href='./dashboard.html'>Return to dashboard</a>";
-	});
-    get(child(dbRef, '/channel/' + channel_id + '/members/members')).then((snapshot) => { // Reference to Arc Push
-	    let data = snapshot.val();
-	    console.log(data);
-	    let button = document.getElementById("arc-push");
-	    if (data[0] == user.email) {
-		    button.setAttribute("onclick", "enablePush()");
-	    } 
-	    else {
-		button.style.visibility = "hidden";
-	    }
-	    
-    });
-    var data_ref = ref(database, "/channel/" + channel_id + "/basic_data/");
-    onValue(data_ref, (snapshot) => {
-      let data = snapshot.val();
-      console.log(document.getElementById("channel_name").innerHTML);
-      document.getElementById("channel_name").innerHTML = data.name;
-      channel_name = data.name;
-    });
-    var message_ref = ref(database, "/channel/" + channel_id + "/messages/");
-    onValue(message_ref, (snapshot) => {
-      let data = snapshot.val();
-      let message_box = document.getElementById("msg-contain");
+		let data =  snapshot.val();
+	   let message_box = document.getElementById("msg-contain");
       message_box.innerHTML = "";
       let msg_list = Object.keys(data);
       for(let n = 0; n < msg_list.length; n++) { // prerequsite for sorting
@@ -375,6 +349,55 @@ onAuthStateChanged(auth, (user) => {
        
 	});
       }
+	}).catch((error) => {
+		console.log(error);
+     document.getElementById("main").innerHTML = "<h1>Error</h1><br><p>There was an error loading this channel.</p><a href='./dashboard.html'>Return to dashboard</a>";
+	});
+    get(child(dbRef, '/channel/' + channel_id + '/members/members')).then((snapshot) => { // Reference to Arc Push
+	    let data = snapshot.val();
+	    console.log(data);
+	    let button = document.getElementById("arc-push");
+	    if (data[0] == user.email) {
+		    button.setAttribute("onclick", "enablePush()");
+	    } 
+	    else {
+		button.style.visibility = "hidden";
+	    }
+	    
+    });
+    var data_ref = ref(database, "/channel/" + channel_id + "/basic_data/");
+    onValue(data_ref, (snapshot) => {
+      let data = snapshot.val();
+      console.log(document.getElementById("channel_name").innerHTML);
+      document.getElementById("channel_name").innerHTML = data.name;
+      channel_name = data.name;
+    });
+    var message_ref = ref(database, "/channel/" + channel_id + "/messages/");
+    onChildAdded(message_ref, (snapshot) => {
+      let message = snapshot.val();
+      let message_box = document.getElementById("msg-contain");
+      get(child(dbRef, "/users/" + message.creator + "/basic_info")).then((snapshot2) => {
+	let user_data = snapshot2.val();
+        let date = new Date(message.date);
+        let datetime = " | on " + String(date.getMonth()+1) + "/" + String(date.getDate()) + "/" + String(date.getFullYear()) + " at " + String(date.getHours()) + ":" + String(date.getMinutes());
+        let box = document.createElement("div");
+        box.setAttribute("class","message");
+        let username_entry = document.createElement("h4");
+        let textNode = document.createTextNode(user_data.displayName + datetime);
+        username_entry.appendChild(textNode);
+        box.appendChild(username_entry);
+	if (message.type == null) {
+        	let content = document.createElement("p");
+        	let textNode2 = document.createTextNode(message.content);
+        	content.appendChild(textNode2);
+        	box.appendChild(content);
+		message_box.appendChild(box);
+		message_box.scrollTop = message_box.scrollHeight - message_box.clientHeight;
+	}
+	else {
+		let path = message.content;
+		download_image(box, message_box, path);
+	}
     });
 	var push_ref = ref(database, "/push/channels/" + channel_id);
 	onValue(push_ref, (snapshot) => {
