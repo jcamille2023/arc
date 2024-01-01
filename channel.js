@@ -364,6 +364,7 @@ onAuthStateChanged(auth, (user) => {
         username_entry.appendChild(textNode);
         box.appendChild(username_entry);
 	if (message.type == null) {
+		console.log("yes!");
         	let content = document.createElement("p");
         	let textNode2 = document.createTextNode(message.content);
         	content.appendChild(textNode2);
@@ -371,6 +372,7 @@ onAuthStateChanged(auth, (user) => {
 		message_box.scrollTop = message_box.scrollHeight - message_box.clientHeight;
 	}
 	else {
+		console.log("fuck.");
 		let path = message.content;
 		download_image(box, path).then(() => {
 			 message_box.appendChild(box);
