@@ -258,7 +258,7 @@ function upload() {
 		console.log(channel_id);
 		console.log(message_date);
 		console.log(message_id);
-		set(ref("/channel/" + channel_id + "/messages/" + message_date + message_id), message_data);
+		set(ref(database, "/channel/" + channel_id + "/messages/" + message_date + message_id), message_data);
 		
 	}
 }
@@ -364,15 +364,14 @@ onAuthStateChanged(auth, (user) => {
         username_entry.appendChild(textNode);
         box.appendChild(username_entry);
 	if (message.type == null) {
-		console.log("yes!");
         	let content = document.createElement("p");
         	let textNode2 = document.createTextNode(message.content);
         	content.appendChild(textNode2);
         	box.appendChild(content);
+		message_box.appendChild(box);
 		message_box.scrollTop = message_box.scrollHeight - message_box.clientHeight;
 	}
 	else {
-		console.log("fuck.");
 		let path = message.content;
 		download_image(box, path).then(() => {
 			 message_box.appendChild(box);
