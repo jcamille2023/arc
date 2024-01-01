@@ -255,9 +255,6 @@ function upload() {
 		console.log(get_date());
 		let message_id = Math.floor(Math.random()*1000000);
 		message_id = message_id + 1000000;
-		console.log(channel_id);
-		console.log(message_date);
-		console.log(message_id);
 		set(ref(database, "/channel/" + channel_id + "/messages/" + message_date + message_id), message_data);
 		
 	}
