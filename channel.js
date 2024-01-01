@@ -373,10 +373,7 @@ onAuthStateChanged(auth, (user) => {
 	}
 	else {
 		let path = message.content;
-		download_image(box, path).then(() => {
-			 message_box.appendChild(box);
-			 message_box.scrollTop = message_box.scrollHeight - message_box.clientHeight;
-		});
+		download_image(box, message_box, path);
 	}
        
 	});
