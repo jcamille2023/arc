@@ -7,6 +7,7 @@ var msg_date;
 var new_user_uid;
 var display_name;
 var channel_name;
+var button;
 const searchParams = new URLSearchParams(window.location.search);
 const channel_id = searchParams.get('channel_id');
  const firebaseConfig = {
@@ -187,15 +188,10 @@ function enablePush() {
 }
 window.enablePush = enablePush;
 
-function send() {
-  get(child(dbRef, "/push/channels/" + channel_id)).then((snapshot) => {
-  	let message_id = Math.floor(Math.random()*1000000);
-  	message_id = message_id + 1000000;
-  	let content = document.getElementById("messagebox").value;
-  	document.getElementById("messagebox").value = "";
-  	msg_date = new Date(); 
-  	console.log(msg_date); 
-  	let msg_date_2 = String(msg_date);
+
+function get_date() {
+	msg_date = new Date(); 
+  console.log(msg_date); 
 	let month = msg_date.getMonth();
 	if(month < 10) {
 		String(month);
@@ -236,7 +232,60 @@ function send() {
 	else {
 		String(seconds);
 	}
-  	let send_date = String(msg_date.getFullYear()) + month + day + hours + minutes + seconds;
+  	return String(msg_date.getFullYear()) + month + day + hours + minutes + seconds;
+}
+
+function upload() {
+	let file = document.getElementById("file").files;
+	for(let n = 0; n < file.length; n++) {
+		let date_for_data = new Date();
+		date_for_data = String(date_for_data);
+		let path = "users/" + uid + "/" + file[n].name;
+		upload_image(path,file[n]);
+		let message_data = {
+			type: "image",
+			content: path,
+			date: date_for_data,
+			creator: uid,
+			channel_name: channel_name,
+			displayName: display_name,
+			channel_id: channel_id,
+		};
+		let message_date = get_date();
+		let message_id = Math.floor(Math.random()*1000000);
+		message_id = message_id + 1000000;
+		set(ref("/channel/" + channel_id + "/messages/" + message_date + message_id), message_data);
+		
+	}
+}
+window.upload = upload;
+
+function start_upload() {
+	let div = document.getElementById("upload");
+	button = div.children[0];
+	let input = document.createElement("input");
+	input.setAttribute("type","file");
+	input.setAttribute("accept","image/*");
+	input.setAttribute("id","file");
+	button.remove();
+	div.appendChild(input);
+	let submit_button = document.createElement("button");
+	submit_button.setAttribute("onclick","upload()");
+	let submit_button_text = document.createTextNode("Submit");
+	submit_button.appendChild(submit_button_text);
+	div.appendChild(submit_button);
+}
+window.start_upload = start_upload;
+function send() {
+  get(child(dbRef, "/push/channels/" + channel_id)).then((snapshot) => {
+  	let message_id = Math.floor(Math.random()*1000000);
+  	message_id = message_id + 1000000;
+  	let content = document.getElementById("messagebox").value;
+  	document.getElementById("messagebox").value = "";
+  	msg_date = new Date(); 
+  	console.log(msg_date); 
+  	let msg_date_2 = String(msg_date);
+  	let send_date = get_date();
   	let data = {
 	  channel_name: channel_name,
 	  creator: uid,
@@ -310,12 +359,21 @@ onAuthStateChanged(auth, (user) => {
         let textNode = document.createTextNode(user_data.displayName + datetime);
         username_entry.appendChild(textNode);
         box.appendChild(username_entry);
-        let content = document.createElement("p");
-        let textNode2 = document.createTextNode(message.content);
-        content.appendChild(textNode2);
-        box.appendChild(content);
-        message_box.appendChild(box);
-	message_box.scrollTop = message_box.scrollHeight - message_box.clientHeight;
+	if (!message.type) {
+        	let content = document.createElement("p");
+        	let textNode2 = document.createTextNode(message.content);
+        	content.appendChild(textNode2);
+        	box.appendChild(content);
+		message_box.scrollTop = message_box.scrollHeight - message_box.clientHeight;
+	}
+	else {
+		let path = message.content;
+		download_image(box, path).then(() => {
+			 message_box.appendChild(box);
+			 message_box.scrollTop = message_box.scrollHeight - message_box.clientHeight;
+		});
+	}
+       
 	});
       }
     });
