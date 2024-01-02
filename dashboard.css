@@ -51,5 +51,7 @@ div#wrapper {
 #channels-table {
   display: grid;
   width:100%;
-  grid-template-columns:  repeat(4, 60px);
+  grid-template-columns: repeat(4, fit-content(500px));
+  justify-content: space-evenly;
+  grid-gap: 20px;
 }
