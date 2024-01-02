@@ -312,8 +312,9 @@ onAuthStateChanged(auth, (user) => {
     display_name = user.displayName;
     document.getElementById("username").innerHTML = user.displayName;
    get(child(dbRef, '/channel/' + channel_id + '/messages')).then((snapshot) => {
-		let data =  snapshot.val();
-	   let message_box = document.getElementById("msg-contain");
+      let data =  snapshot.val();
+if (data != null) {
+      let message_box = document.getElementById("msg-contain");
       message_box.innerHTML = "";
       let msg_list = Object.keys(data);
       for(let n = 0; n < msg_list.length; n++) { // prerequsite for sorting
@@ -349,6 +350,11 @@ onAuthStateChanged(auth, (user) => {
        
 	});
       }
+}
+	   else {
+		let message_box = document.getElementById("msg-contain");
+		message_box.innerHTML = "<p>This is the start of this channel!</p>";
+	   }
 	}).catch((error) => {
 		console.log(error);
      document.getElementById("main").innerHTML = "<h1>Error</h1><br><p>There was an error loading this channel.</p><a href='./dashboard.html'>Return to dashboard</a>";
