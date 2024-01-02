@@ -313,44 +313,9 @@ onAuthStateChanged(auth, (user) => {
     document.getElementById("username").innerHTML = user.displayName;
    get(child(dbRef, '/channel/' + channel_id + '/messages')).then((snapshot) => {
       let data =  snapshot.val();
-if (data != null) {
-      let message_box = document.getElementById("msg-contain");
-      message_box.innerHTML = "";
-      let msg_list = Object.keys(data);
-      for(let n = 0; n < msg_list.length; n++) { // prerequsite for sorting
-       Number(msg_list[n]);
-      }
-      msg_list.sort((a,b) => a-b);
-      
-      for(let n = 0; n < msg_list.length; n++) {
-        let message = data[msg_list[n]];
-	console.log(message);
-	get(child(dbRef, "/users/" + message.creator + "/basic_info")).then((snapshot2) => {
-	let user_data = snapshot2.val();
-        let date = new Date(message.date);
-        let datetime = " | on " + String(date.getMonth()+1) + "/" + String(date.getDate()) + "/" + String(date.getFullYear()) + " at " + String(date.getHours()) + ":" + String(date.getMinutes());
-        let box = document.createElement("div");
-        box.setAttribute("class","message");
-        let username_entry = document.createElement("h4");
-        let textNode = document.createTextNode(user_data.displayName + datetime);
-        username_entry.appendChild(textNode);
-        box.appendChild(username_entry);
-	if (message.type == null) {
-        	let content = document.createElement("p");
-        	let textNode2 = document.createTextNode(message.content);
-        	content.appendChild(textNode2);
-        	box.appendChild(content);
-		message_box.appendChild(box);
-		message_box.scrollTop = message_box.scrollHeight - message_box.clientHeight;
+	if (data != null) {
+       		console.log(data);
 	}
-	else {
-		let path = message.content;
-		download_image(box, message_box, path);
-	}
-       
-	});
-      }
-}
 	   else {
 		let message_box = document.getElementById("msg-contain");
 		message_box.innerHTML = "<p>This is the start of this channel!</p>";
