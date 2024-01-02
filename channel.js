@@ -399,6 +399,8 @@ onAuthStateChanged(auth, (user) => {
 		download_image(box, message_box, path);
 	}
     });
+    });
+	    
 	var push_ref = ref(database, "/push/channels/" + channel_id);
 	onValue(push_ref, (snapshot) => {
 		let data = snapshot.val();
