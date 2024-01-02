@@ -353,15 +353,17 @@ onAuthStateChanged(auth, (user) => {
 		console.log(error);
      document.getElementById("main").innerHTML = "<h1>Error</h1><br><p>There was an error loading this channel.</p><a href='./dashboard.html'>Return to dashboard</a>";
 	});
-    get(child(dbRef, '/channel/' + channel_id + '/members/members')).then((snapshot) => { // Reference to Arc Push
+    get(child(dbRef, '/channel/' + channel_id + '/members/admin')).then((snapshot) => { // Reference to Arc Push
 	    let data = snapshot.val();
 	    console.log(data);
-	    let button = document.getElementById("arc-push");
-	    if (data[0] == user.email) {
-		    button.setAttribute("onclick", "enablePush()");
+	    let push_button = document.getElementById("arc-push");
+	    let manage_button = document.getElementById("manage_button");
+	    if (user.email in Object.keys(data)) {
+		    push_button.setAttribute("onclick", "enablePush()");
 	    } 
 	    else {
-		button.style.visibility = "hidden";
+		push_button.style.visibility = "hidden";
+		manage_button.style.visibility = "hidden";
 	    }
 	    
     });
