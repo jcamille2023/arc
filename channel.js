@@ -107,26 +107,33 @@ function manage_users() {
   '<button onclick="submit()">Submit</button>'+
   '<button onclick="cancel()">Cancel</button>'+
   '<div><h1>Members</h1>'+
-'<div id="members_list"></div></div>'+
+'<table id="members_list"><tbody></tbody></table></div>'+
   '</div>';
 get(child(dbRef, "/channel/" + channel_id + "/members/members")).then((snapshot) => {
 	let table = document.getElementById("members_list");
 	let data = snapshot.val();
 	console.log(data);
 	for(let n = 0; n < data.length; n++) {
-		var cell = document.createElement("div");
-		table.appendChild(cell);
+		var row = table.insertRow(-1);
+		var cell = row.insertCell(-1);
 		var name = document.createElement("p");
 		name.style.color = "white";
 		var nameNode = document.createTextNode(data[n]);
 		name.append(nameNode);
 		cell.append(name);
+		let delete_cell = row.insertCell(-1);
 		let delete_button = document.createElement("button");
 		let delete_icon = document.createElement("img");
-		delete_icon.setAttribute("src","./assets/delete_icon.jpg");
+		delete_icon.setAttribute("src","./assets/delete_icon.png");
 		delete_button.setAttribute("onclick","delete(" + data[n] + ")");
 		delete_button.appendChild(delete_icon);
-		cell.appendChild(delete_button);
+		delete_cell.appendChild(delete_button);
+		let admin_cell = row.insertCell(-1);
+		let set_admin = document.createElement("button");
+		set_admin.setAttribute("onclick","admin()");
+		let admin_btn_text = document.createTextNode("Make admin");
+		set_admin.appendChild(admin_btn_text);
+		admin_cell.appendChild(set_admin);
 	}
 });
 }
@@ -329,7 +336,7 @@ onAuthStateChanged(auth, (user) => {
 	    console.log(data);
 	    let push_button = document.getElementById("arc-push");
 	    let manage_button = document.getElementById("manage_button");
-	    if (Object.keys(data).includes(user.email)) {
+	    if (Object.values(data).includes(user.email)) {
 		    push_button.setAttribute("onclick", "enablePush()");
 	    } 
 	    else {
