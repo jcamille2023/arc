@@ -364,7 +364,7 @@ if (data != null) {
 	    console.log(data);
 	    let push_button = document.getElementById("arc-push");
 	    let manage_button = document.getElementById("manage_button");
-	    if (user.email in Object.keys(data)) {
+	    if (Object.keys(data).includes(user.email)) {
 		    push_button.setAttribute("onclick", "enablePush()");
 	    } 
 	    else {
