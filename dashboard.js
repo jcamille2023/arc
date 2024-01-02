@@ -32,9 +32,9 @@ function logout() {
 window.logout = logout;
 function submit() {
  var channel_id = Math.floor(Math.random()*99999);
- let members = [user_email];   
+ let admin = [user_email];   
  let name = document.getElementById("name").value;
- set(ref(database, "/channel/" + channel_id + "/members/"),{members: members});
+ set(ref(database, "/channel/" + channel_id + "/members/"),{admin: admin});
  set(ref(database, "/channel/" + channel_id + "/basic_data"), {name: name});
  set(ref(database, "users/" + uid + "/channels/" + channel_id), {type: "owner"});
  var url = new URL("https://jcamille2023.github.io/arc/channel");
