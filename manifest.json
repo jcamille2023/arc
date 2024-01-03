@@ -1,0 +1,26 @@
+{
+  "background_color": "#0e0f24",
+  "description": "Arc is a website which facilitates social communication using Firebase Realtime Database and Authentication and serves as the base for communication platforms on projects like Checkers Online.",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "Arc",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "Arc",
+  "start_url": "/",
+  "theme_color": "#0d16d4",
+  "categories": [
+    "social"
+  ],
+  "screenshots": [],
+  "icons": [],
+  "shortcuts": [
+    {
+      "name": "Login to Arc",
+      "url": "https://jcamille2023.github.io/arc",
+      "description": "Welcome to Arc by Insight"
+    }
+  ],
+  "id": "arc_web_app",
+  "lang": "eo"
+}
