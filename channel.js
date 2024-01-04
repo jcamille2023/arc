@@ -436,7 +436,16 @@ onAuthStateChanged(auth, (user) => {
 	}
     });
     });
-	    
+
+
+	var chat_type_ref = ref(database, "/channel/" + channel_id + "/typing/");
+	onChildAdded(chat_type_ref, (snapshot) => {
+		let data = snapshot.val();
+		data - Object.keys(data);
+		if(data.length = 1) {
+			console.log(data[0] + " is typing...");
+		}
+	});
 	var push_ref = ref(database, "/push/channels/" + channel_id);
 	onValue(push_ref, (snapshot) => {
 		let data = snapshot.val();
