@@ -64,7 +64,7 @@ get(child(dbRef, "/users/")).then((snapshot) => {
 	match = email_exists(added_email,data);
 	console.log(match);
 	if(match === true) {
- get(child(dbRef, "/channel/" + channel_id + "/members/")).then((snapshot) => {
+ get(child(dbRef, "/channel/" + channel_id + "/members/members")).then((snapshot) => {
    let data = snapshot.val();
    members = data.members;
    members.push(added_email);
