@@ -300,7 +300,6 @@ function start_upload() {
 	input.setAttribute("type","file");
 	input.setAttribute("accept","image/*");
 	input.setAttribute("id","file");
-	button.remove();
 	div.appendChild(input);
 	let submit_button = document.createElement("button");
 	submit_button.setAttribute("onclick","upload()");
