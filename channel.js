@@ -1,4 +1,4 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
+32import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut} from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
 import { getDatabase, set, ref, onValue, get, child, update, onChildAdded } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-messaging.js";
@@ -79,7 +79,7 @@ else {
 	members = [];
    	members.push(added_email);
    	console.log(members);
-   	set(ref(database, "/channel/" + channel_id + "/members/"), {members: members});
+   	set(ref(database, "/channel/" + channel_id + "/members/members"), members);
    	set(ref(database, "/users/" + new_user_uid + "/channels/" + channel_id), {name: channel_name});
    	cancel();
    	document.getElementById("success").innerHTML = "Successfully added " + added_email;
