@@ -72,3 +72,10 @@ div#wrapper {
 #messagelog-row {
   max-width: 100%;
 }
+
+#messagebox {
+  width: 65%;
+  color: white;
+  background-color: transparent;
+  border: 1px white solid
+}
