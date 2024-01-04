@@ -27,13 +27,15 @@ window.upload_image = upload_image;
 
 function download_image(element, parent, path) {
   const pathReference = ref(storage, path);
+  let a_ele = document.createElement("a");
   let img = document.createElement("img");
-  element.appendChild(img);
+  img.setAttribute("width","200px");
+  a_ele.appendChild(img);
+  element.appendChild(a_ele);
   parent.appendChild(element);
   getDownloadURL(pathReference).then((url) => {
-
+    a_ele.setAttribute("href", url);
     img.setAttribute("src", url);
-    
     element.scrollTop = element.scrollHeight - element.clientHeight;
   });
   
