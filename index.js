@@ -14,9 +14,7 @@ import { getAuth, onAuthStateChanged, signOut} from "https://www.gstatic.com/fir
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
-  const database = getDatabase(app);
   const auth = getAuth(app);
-  const dbRef = ref(getDatabase());
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
