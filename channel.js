@@ -70,7 +70,7 @@ if (data != null) {
    members = data.members;
    members.push(added_email);
    console.log(members);
-   set(ref(database, "/channel/" + channel_id + "/members/"), {members: members});
+   set(ref(database, "/channel/" + channel_id + "/members/members"), members);
    set(ref(database, "/users/" + new_user_uid + "/channels/" + channel_id), {name: channel_name});
    cancel();
    document.getElementById("success").innerHTML = "Successfully added " + added_email;
