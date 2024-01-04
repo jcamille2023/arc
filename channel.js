@@ -344,6 +344,7 @@ function typing_check() {
 		remove(typing_ref);
 		console.log("Typing check killed");
 		running_listener = false;
+		clearInterval(interval);
 	}
 }
 function type_event() {
