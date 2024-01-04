@@ -9,11 +9,15 @@ div#msg-contain {
     
 }
 
-table#channels-table {
+
+#channels-table {
     bottom: 0;
     position: fixed;
 }
 
+#channels-table > div {
+  position: relative;
+}
 section#open-section {
     color: white;
 }
@@ -60,8 +64,11 @@ div#wrapper {
   
 }
 
-@media (min-width: 320px) {
-  #messagelog-row {
-    height: 0px;
-  }
+
+#message {
+  max-width: fit-content;
+}
+
+#messagelog-row {
+  max-width: 100%;
 }
