@@ -336,15 +336,19 @@ var interval;
 var run_time = 0;
 function typing_check() {
 	if(run_time = 0) {
-		console.log("Run time check passed");	
+		console.log("Run time check passed");
+		run_time += 1;
 	}
 	else {
 		let typing_ref = ref(database, "/channel/" + channel_id + "/typing/" + uid);
 		remove(typing_ref);
+		console.log("Typing check killed");
+		running_listener = false;
 	}
 }
 function type_event() {
 	if (running_listener == false) {
+			console.log("Starting listener");
 			let updates = {};
 			let data = {typing: true}
 			updates['/channel/' + channel_id + "/typing/" + uid] = data;
