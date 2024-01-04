@@ -367,14 +367,14 @@ function type_event() {
 
 
 async function append_people_typing(list) {
-	let people_typing_msg;
+	let people_typing_msg = "";
 	let row = document.getElementById("typing-row");
 	console.log(list);
 	if(list.length > 0) {
 		for(let n = 0; n < list.length; n++) {
 			await get(child(dbRef, "users/" + list[n] + "/basic_info")).then((snapshot) => {
 				let data = snapshot.val();
-				let type_name = data.display_name;
+				let type_name = data.displayName;
 				if (list.length > 1) {
 					people_typing_msg += type_name + ",";
 				}
