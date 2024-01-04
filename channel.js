@@ -351,7 +351,7 @@ function type_event() {
 	if (running_listener == false) {
 			console.log("Starting listener");
 			let updates = {};
-			let data = {typing: true}
+			let data = {typing: uid}
 			updates['/channel/' + channel_id + "/typing/" + uid] = data;
 			update(dbRef, updates);
 			running_listener = true;
@@ -441,7 +441,7 @@ onAuthStateChanged(auth, (user) => {
 	var chat_type_ref = ref(database, "/channel/" + channel_id + "/typing/");
 	onChildAdded(chat_type_ref, (snapshot) => {
 		let data = snapshot.val();
-		data = Object.keys(data);
+		data = Object.values(data);
 		if(data.length = 1) {
 			console.log(data[0] + " is typing...");
 		}
