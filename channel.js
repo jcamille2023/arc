@@ -365,13 +365,21 @@ function type_event() {
 	}
 }
 
-function append_people_typing(list) {
+function get_name_by_id(id) {
+	get(child(dbRef, "users/" + list[n] + "/basic_info")).then((snapshot) => {
+		let data = snapshot.val();
+		let type_name = data.display_name;
+	});
+}
+
+async function append_people_typing(list) {
 	let people_typing_msg;
 	let row = document.getElementById("typing-row");
 	console.log(list);
 	if(list.length > 0) {
 		for(let n = 0; n < list.length; n++) {
-			get(child(dbRef, "users/" + list[n] + "/basic_info")).then((snapshot) => {
+			let display_name = get_name_by_id(list[n]);
+			await get(child(dbRef, "users/" + list[n] + "/basic_info")).then((snapshot) => {
 				let data = snapshot.val();
 				let type_name = data.display_name;
 				if (list.length > 1) {
