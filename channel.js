@@ -380,7 +380,7 @@ function append_people_typing(list) {
 				else {
 					people_typing_msg = type_name + " is typing...";
 				}
-			}
+			});
 		}
 		if(list.length = 1) {
 			row.innerHTML = people_typing_msg;
