@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut} from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
-import { getDatabase, set, ref, onValue, get, child, update, onChildAdded, remove} from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
+import { getDatabase, set, ref, onValue, get, child, update, onChildAdded, remove, onChildRemoved} from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-messaging.js";
 var uid;
 var msg_date;
@@ -8,6 +8,7 @@ var new_user_uid;
 var display_name;
 var channel_name;
 var button;
+var people_typing = [];
 const searchParams = new URLSearchParams(window.location.search);
 const channel_id = searchParams.get('channel_id');
  const firebaseConfig = {
@@ -364,6 +365,35 @@ function type_event() {
 	}
 }
 
+function append_people_typing(list) {
+	let people_typing_msg;
+	let row = document.getElementById("typing-row");
+	
+	if(list.length > 0) {
+		for(let n = 0; n < list.length; n++) {
+			get(child(dbRef, "users/" + list[n] + "/basic_info")).then((snapshot) => {
+				let data = snapshot.val();
+				let type_name = data.display_name;
+				if (list.length > 1) {
+					people_typing_msg += type_name + ",";
+				}
+				else {
+					people_typing_msg = type_name + " is typing...";
+				}
+			}
+		}
+		if(list.length = 1) {
+			row.innerHTML = people_typing_msg;
+		}
+		else {
+			row.innerHTML = people_typing_msg + " are typing...";
+		}
+	}
+	else {
+		row.innerHTML = "";
+	}
+}
+
 onAuthStateChanged(auth, (user) => {
   if (user) {
     // User is signed in, see docs for a list of available properties
@@ -437,21 +467,20 @@ onAuthStateChanged(auth, (user) => {
     });
     });
 
-
+	
 	var chat_type_ref = ref(database, "/channel/" + channel_id + "/typing/");
 	onChildAdded(chat_type_ref, (snapshot) => {
 		let data = snapshot.val();
 		data = Object.values(data);
-		if(data.length = 1) {
-			console.log(data[0] + " is typing...");
-		}
-		else {
-			let people_typing_msg;
-			for(let n = 0; n < data.length; n++) {
-				people_typing_msg += data[n] + ", ";
-			}
-			people_typing_msg += " are typing..."
-		}
+		people_typing.append(data[0]);
+		append_people_typing(people_typing);
+	});
+	onChildRemoved(chat_type_ref, (snapshot) => {
+		let data = snapshot.val();
+		data = Object.values(data);
+		let index = people_typing.getIndex(data[0]);
+		people_typing.splice(index,1);
+		append_people_typing(people_typing);
 	});
 	var push_ref = ref(database, "/push/channels/" + channel_id);
 	onValue(push_ref, (snapshot) => {
