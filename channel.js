@@ -345,7 +345,7 @@ function typing_check() {
 }
 function type_event() {
 	if (running_listener == false) {
-			let updates = [];
+			let updates = {};
 			let data = {typing: true}
 			updates['/channel/' + channel_id + "/typing/" + uid] = data;
 			update(dbRef, updates);
