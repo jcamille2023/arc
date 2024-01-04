@@ -349,12 +349,13 @@ function type_event() {
 			let data = {typing: true}
 			updates['/channel/' + channel_id + "/typing/" + uid] = data;
 			update(dbRef, updates);
-			running_listener == true;
+			running_listener = true;
 	}
 	else {
 		run_time = 0;
 		clearInterval(interval);
 		interval = setInterval(typing_check,2000);
+		console.log("Interval set");
 	}
 }
 
