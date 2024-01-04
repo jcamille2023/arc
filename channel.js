@@ -478,7 +478,7 @@ onAuthStateChanged(auth, (user) => {
 	onChildRemoved(chat_type_ref, (snapshot) => {
 		let data = snapshot.val();
 		data = Object.values(data);
-		let index = people_typing.getIndex(data[0]);
+		let index = people_typing.indexOf(data[0]);
 		people_typing.splice(index,1);
 		append_people_typing(people_typing);
 	});
