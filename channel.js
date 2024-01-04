@@ -336,7 +336,7 @@ var running_listener = false;
 var interval;
 var run_time = 0;
 function typing_check() {
-	if(run_time = 0) {
+	if(run_time == 0) {
 		console.log("Run time check passed");
 		run_time += 1;
 	}
@@ -352,7 +352,7 @@ function type_event() {
 	if (running_listener == false) {
 			console.log("Starting listener");
 			let updates = {};
-			let data = {typing: uid}
+			let data = {typing: uid};
 			updates['/channel/' + channel_id + "/typing/" + uid] = data;
 			update(dbRef, updates);
 			running_listener = true;
@@ -382,7 +382,7 @@ function append_people_typing(list) {
 				}
 			});
 		}
-		if(list.length = 1) {
+		if(list.length == 1) {
 			row.innerHTML = people_typing_msg;
 		}
 		else {
