@@ -36,41 +36,21 @@
     </section>
     
 <section id="chatbox">
-    <table id="channels-table">
-        <tbody>
-            <tr id="messagelog-row">
-                <td><div id="msg-contain"></div></td>
-            </tr>
-            <tr id="typing-row">
-                
-            </tr>
-            <tr>
-                <td>
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td width="80%">
-                                    <input type="text" id="messagebox">
-                                </td>
-                                <td width="10%">
+    <div id="channels-table">
+            <div id="messagelog-row">
+                <div id="msg-contain"></div>
+            </div>
+            <div id="typing-row"></div>
+                    <div id="upload">
+                                    <input type="text" id="messagebox" value="Type here">
+                                
+                                
                                     <button onclick="send()">Send</button>
-                                </td>
-                            <td width="10%">
-                                    <div id="upload"><button onclick="start_upload()">Upload</button></div>
-                                </td></tr>
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-
-
-
-    
-            
- 
-
+                                
+                            
+                                    <button onclick="start_upload()">Upload</button>
+                    </div>
+    </div>
 </section>
 </div> <!-- end box -->
 <div id="manage_users" class="box overlay" style="color: white;background-color: black;visibility: hidden;"></div> <!-- end overlay -->
