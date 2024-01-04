@@ -285,14 +285,17 @@ function upload() {
 		let message_id = Math.floor(Math.random()*1000000);
 		message_id = message_id + 1000000;
 		set(ref(database, "/channel/" + channel_id + "/messages/" + message_date + message_id), message_data);
+		let div = document.getElementById("upload");
+		div.innerHTML = '<input type="text" id="messagebox" value="Type here"><button onclick="send()">Send</button><button onclick="start_upload()">Upload</button>';
 		
 	}
 }
 window.upload = upload;
 
+
 function start_upload() {
 	let div = document.getElementById("upload");
-	button = div.children[0];
+	div.innerHTML = "";
 	let input = document.createElement("input");
 	input.setAttribute("type","file");
 	input.setAttribute("accept","image/*");
