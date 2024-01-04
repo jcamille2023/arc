@@ -472,7 +472,7 @@ onAuthStateChanged(auth, (user) => {
 	onChildAdded(chat_type_ref, (snapshot) => {
 		let data = snapshot.val();
 		data = Object.values(data);
-		people_typing.append(data[0]);
+		people_typing.push(data[0]);
 		append_people_typing(people_typing);
 	});
 	onChildRemoved(chat_type_ref, (snapshot) => {
