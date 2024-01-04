@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut} from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
-import { getDatabase, set, ref, onValue, get, child, update, onChildAdded } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
+import { getDatabase, set, ref, onValue, get, child, update, onChildAdded, remove} from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-messaging.js";
 var uid;
 var msg_date;
@@ -331,6 +331,33 @@ function send() {
 }
 window.send = send;
 
+var running_listener = false;
+var interval;
+var run_time = 0;
+function typing_check() {
+	if(run_time = 0) {
+		console.log("Run time check passed");	
+	}
+	else {
+		let typing_ref = ref(database, "/channel/" + channel_id + "/typing/" + uid);
+		remove(typing_ref);
+	}
+}
+function type_event() {
+	if (running_listener == false) {
+			let updates = [];
+			let data = {typing: true}
+			updates['/channel/' + channel_id + "/typing/" + uid] = data;
+			update(dbRef, updates);
+			running_listener == true;
+	}
+	else {
+		run_time = 0;
+		clearInterval(interval);
+		interval = setInterval(typing_check,2000);
+	}
+}
+
 onAuthStateChanged(auth, (user) => {
   if (user) {
     // User is signed in, see docs for a list of available properties
@@ -343,6 +370,8 @@ onAuthStateChanged(auth, (user) => {
       let data =  snapshot.val();
 	if (data != null) {
        		console.log(data);
+		let input = document.getElementById("messagebox");
+		input.addEventListener("keydown",type_event);
 	}
 	   else {
 		let message_box = document.getElementById("msg-contain");
