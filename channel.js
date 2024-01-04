@@ -368,7 +368,7 @@ function type_event() {
 function append_people_typing(list) {
 	let people_typing_msg;
 	let row = document.getElementById("typing-row");
-	
+	console.log(list);
 	if(list.length > 0) {
 		for(let n = 0; n < list.length; n++) {
 			get(child(dbRef, "users/" + list[n] + "/basic_info")).then((snapshot) => {
