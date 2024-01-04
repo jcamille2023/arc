@@ -66,6 +66,7 @@ get(child(dbRef, "/users/")).then((snapshot) => {
 	if(match === true) {
  get(child(dbRef, "/channel/" + channel_id + "/members/members")).then((snapshot) => {
    let data = snapshot.val();
+if (data != null) {
    members = data.members;
    members.push(added_email);
    console.log(members);
@@ -73,7 +74,17 @@ get(child(dbRef, "/users/")).then((snapshot) => {
    set(ref(database, "/users/" + new_user_uid + "/channels/" + channel_id), {name: channel_name});
    cancel();
    document.getElementById("success").innerHTML = "Successfully added " + added_email;
-
+}
+else {
+	members = [];
+   	members.push(added_email);
+   	console.log(members);
+   	set(ref(database, "/channel/" + channel_id + "/members/"), {members: members});
+   	set(ref(database, "/users/" + new_user_uid + "/channels/" + channel_id), {name: channel_name});
+   	cancel();
+   	document.getElementById("success").innerHTML = "Successfully added " + added_email;
+	
+}
  });
 }
  else {
@@ -113,27 +124,37 @@ get(child(dbRef, "/channel/" + channel_id + "/members/members")).then((snapshot)
 	let table = document.getElementById("members_list");
 	let data = snapshot.val();
 	console.log(data);
+	if (data != null) {
 	for(let n = 0; n < data.length; n++) {
+			var row = table.insertRow(-1);
+			var cell = row.insertCell(-1);
+			var name = document.createElement("p");
+			name.style.color = "white";
+			var nameNode = document.createTextNode(data[n]);
+			name.append(nameNode);
+			cell.append(name);
+			let delete_cell = row.insertCell(-1);
+			let delete_button = document.createElement("button");
+			let delete_icon = document.createElement("img");
+			delete_icon.setAttribute("src","./assets/delete_icon.png");
+			delete_icon.setAttribute("width","50px");
+			delete_button.setAttribute("onclick","delete(" + data[n] + ")");
+			delete_button.appendChild(delete_icon);
+			delete_cell.appendChild(delete_button);
+			let admin_cell = row.insertCell(-1);
+			let set_admin = document.createElement("button");
+			set_admin.setAttribute("onclick","admin()");
+			let admin_btn_text = document.createTextNode("Make admin");
+			set_admin.appendChild(admin_btn_text);
+			admin_cell.appendChild(set_admin);
+		
+	}
+	}
+	else {
 		var row = table.insertRow(-1);
-		var cell = row.insertCell(-1);
-		var name = document.createElement("p");
-		name.style.color = "white";
-		var nameNode = document.createTextNode(data[n]);
-		name.append(nameNode);
-		cell.append(name);
-		let delete_cell = row.insertCell(-1);
-		let delete_button = document.createElement("button");
-		let delete_icon = document.createElement("img");
-		delete_icon.setAttribute("src","./assets/delete_icon.png");
-		delete_button.setAttribute("onclick","delete(" + data[n] + ")");
-		delete_button.appendChild(delete_icon);
-		delete_cell.appendChild(delete_button);
-		let admin_cell = row.insertCell(-1);
-		let set_admin = document.createElement("button");
-		set_admin.setAttribute("onclick","admin()");
-		let admin_btn_text = document.createTextNode("Make admin");
-		set_admin.appendChild(admin_btn_text);
-		admin_cell.appendChild(set_admin);
+		var cell = row.insertCell(-1);	
+		var text = document.createTextNode("There are no non-admin members.");
+		cell.appendChild(text);
 	}
 });
 }
