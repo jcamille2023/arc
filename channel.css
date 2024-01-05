@@ -76,6 +76,10 @@ div#wrapper {
   border: 1px white solid
 }
 
+html {
+  touch-action: pan-x pan-y;
+  height: 100% 
+}
 
 @media (max-width: 450px) {
   #msg-contain {
