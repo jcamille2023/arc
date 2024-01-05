@@ -169,7 +169,6 @@ function requestPermission() {
       console.log('Notification permission granted.');
 	let push_button = document.getElementById("arc-push");
       if (push_button) {
-      	
       	push_button.remove();
       }
 	getToken(messaging, {vapidKey: "BFN_4xdvMbKPLlLtMDMiD5gyRnO7dZVR-LQArRYxwuOn3dnZbF_XUbaw3g72p4-NsCyPE-xhYG8YpWHJ0r3goBk"}).then((currentToken) => {
@@ -429,8 +428,8 @@ onAuthStateChanged(auth, (user) => {
 		    push_button.setAttribute("onclick", "enablePush()");
 	    } 
 	    else {
-		push_button.style.visibility = "hidden";
-		manage_button.style.visibility = "hidden";
+		push_button.style.display = "none";
+		manage_button.style.display = "none";
 	    }
 	    
     });
@@ -493,8 +492,8 @@ onAuthStateChanged(auth, (user) => {
 				let button = document.getElementById("arc-push");
 				let data2 = snapshot.val();
 				console.log(data2);
-				if (data2 != null && !(uid in Object.values(data2)) && data2[0] != uid) {
-						button.style.visibility = "visible";
+				if (data2 != null && !(Object.values(data2).contains(uid))) {
+						button.style.display = "inline";
 						button.innerHTML = "Enable notifications";
 					}
 			});
