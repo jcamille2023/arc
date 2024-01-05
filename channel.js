@@ -161,7 +161,14 @@ get(child(dbRef, "/channel/" + channel_id + "/members/members")).then((snapshot)
 }
 window.manage_users = manage_users;
 
-
+function unsubscribe() {
+	get(child(dbRef, "/push/tokens/" + uid)).then((snapshot) => {
+		let data = snapshot.val();
+		let token = data.token;
+		set(ref(database,"/push/unsubscribe/" + uid), {token: token, channel_id: channel_id});
+	});
+}
+window.unsubscribe = unsubscribe;
 function requestPermission() {
   console.log('Requesting permission...');
   Notification.requestPermission().then((permission) => {
@@ -190,13 +197,7 @@ function requestPermission() {
 window.requestPermission = requestPermission; 
 
 function enablePush() {
-	let description = "What is Arc Push?\n"+
-		"Arc Push is a service that allows Arc to send push notifications whenever messages are sent in a channel.\n"+
-		"Arc Push must be enabled by you (the channel owner) in order for other users to send notifications. "+
-		"You do not have to receive notifications yourself because you are not required to confirm notifications when Arc Push"+
-		" is enabled.\n"+
-		"Press OK to enable Arc Push or press Cancel to revert the process.";
-	let enabled = confirm(description);
+	let enabled = true;
 	if (enabled) {
 		get(child(dbRef, "/channel/" + channel_id + "/push")).then((snapshot) => {
 			let data = snapshot.val();
@@ -425,7 +426,7 @@ onAuthStateChanged(auth, (user) => {
 	    let push_button = document.getElementById("arc-push");
 	    let manage_button = document.getElementById("manage_button");
 	    if (Object.values(data).includes(user.email)) {
-		    push_button.setAttribute("onclick", "enablePush()");
+		    enablePush();
 	    } 
 	    else {
 		push_button.style.display = "none";
