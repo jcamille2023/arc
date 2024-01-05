@@ -492,7 +492,7 @@ onAuthStateChanged(auth, (user) => {
 				let button = document.getElementById("arc-push");
 				let data2 = snapshot.val();
 				console.log(data2);
-				if (data2 != null && !(Object.values(data2).contains(uid))) {
+				if (data2 != null && !(Object.values(data2).includes(uid))) {
 						button.style.display = "inline";
 						button.innerHTML = "Enable notifications";
 					}
