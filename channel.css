@@ -3,7 +3,7 @@ div#header {
 }
 
 div#msg-contain {
-    overflow: auto;
+    overflow-y: auto;
     color: white;
     max-height:370px;
     
@@ -66,16 +66,22 @@ div#wrapper {
 
 
 #message {
-  max-width: fit-content;
-}
-
-#messagelog-row {
-  max-width: 100%;
+  max-width: 400px;
 }
 
 #messagebox {
-  width: 65%;
+  width: fit-content;
   color: white;
   background-color: transparent;
   border: 1px white solid
+}
+
+
+@media (max-width: 450px) {
+  #msg-contain {
+    scale: 1.2;
+    padding: 50px;
+    max-width: 390px;
+    
+  }
 }
