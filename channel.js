@@ -176,7 +176,8 @@ function requestPermission() {
       console.log('Notification permission granted.');
 	let push_button = document.getElementById("arc-push");
       if (push_button) {
-      	push_button.remove();
+      	push_button.setAttribute("onclick","unsubscribe()");
+	push_button.innerHTML = "Disable notifications";
       }
 	getToken(messaging, {vapidKey: "BFN_4xdvMbKPLlLtMDMiD5gyRnO7dZVR-LQArRYxwuOn3dnZbF_XUbaw3g72p4-NsCyPE-xhYG8YpWHJ0r3goBk"}).then((currentToken) => {
 	if(currentToken) {
@@ -426,10 +427,10 @@ onAuthStateChanged(auth, (user) => {
 	    let push_button = document.getElementById("arc-push");
 	    let manage_button = document.getElementById("manage_button");
 	    if (Object.values(data).includes(user.email)) {
-		    enablePush();
+		   // enablePush();
 	    } 
 	    else {
-		push_button.style.display = "none";
+		// push_button.style.display = "none";
 		manage_button.style.display = "none";
 	    }
 	    
