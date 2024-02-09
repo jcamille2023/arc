@@ -1,7 +1,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut} from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
-import { getDatabase, set, ref, onValue, get, child, update, onChildAdded, remove, onChildRemoved} from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
+import { getDatabase, set, ref, onValue, get, child, update, onChildAdded, remove, onChildRemoved, query, limitToLast} from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-messaging.js";
+
+
 var uid;
 var msg_date;
 var new_user_uid;
@@ -20,6 +22,7 @@ const channel_id = searchParams.get('channel_id');
   appId: "1:1073428960179:web:c61897786f1d2ba05131c6",
   measurementId: "G-47T814R2SK"
 };
+
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const database = getDatabase(app);
@@ -264,7 +267,7 @@ function get_date() {
 	}
   	return String(msg_date.getFullYear()) + month + day + hours + minutes + seconds;
 }
-
+/*
 function upload() {
 	let file = document.getElementById("file").files;
 	for(let n = 0; n < file.length; n++) {
@@ -292,7 +295,7 @@ function upload() {
 	}
 }
 window.upload = upload;
-
+*/
 
 function start_upload() {
 	let div = document.getElementById("upload");
@@ -303,13 +306,26 @@ function start_upload() {
 	input.setAttribute("id","file");
 	div.appendChild(input);
 	let submit_button = document.createElement("button");
-	submit_button.setAttribute("onclick","upload()");
+	submit_button.addEventListener("onclick", () => {
+		let file = document.getElementById("file").files;
+	for(let n = 0; n < file.length; n++) {
+		let date_for_data = new Date();
+		date_for_data = String(date_for_data);
+		let path = "users/" + uid + "/" + file[n].name;
+		upload_image(path,file[n]);
+		send(path,"image");
+		let div = document.getElementById("upload");
+		div.innerHTML = '<input type="text" id="messagebox" value="Type here"><button onclick="send()">Send</button><button onclick="start_upload()">Upload</button>';
+	}
+	});
 	let submit_button_text = document.createTextNode("Submit");
 	submit_button.appendChild(submit_button_text);
 	div.appendChild(submit_button);
 }
 window.start_upload = start_upload;
-function send() {
+
+
+function send(msg, type) {
   get(child(dbRef, "/push/channels/" + channel_id)).then((snapshot) => {
   	let message_id = Math.floor(Math.random()*1000000);
   	message_id = message_id + 1000000;
@@ -320,10 +336,11 @@ function send() {
   	let msg_date_2 = String(msg_date);
   	let send_date = get_date();
   	let data = {
+	  type: type,
 	  channel_name: channel_name,
 	  creator: uid,
 	  displayName: display_name,
-	  content: content,
+	  content: msg,
 	  date: msg_date_2,
 	  channel_id: channel_id,
   	};
@@ -351,7 +368,11 @@ function typing_check() {
 		clearInterval(interval);
 	}
 }
-function type_event() {
+function type_event(e) {
+	if(e.key == "Enter") {
+		let msg = document.getElementById("messagebox");
+		send(msg,"text");
+	}
 	if (running_listener == false) {
 			console.log("Starting listener");
 			let updates = {};
@@ -405,6 +426,11 @@ onAuthStateChanged(auth, (user) => {
     console.log(user);
     uid = user.uid;
     display_name = user.displayName;
+    let send_button = document.getElementById("send");
+    send_button.addEventListener("onclick", () => {
+	    let msg = document.getElementById("messagebox").value;
+	    send(msg,"text");
+    });
     document.getElementById("username").innerHTML = user.displayName;
    get(child(dbRef, '/channel/' + channel_id + '/messages')).then((snapshot) => {
       let data =  snapshot.val();
@@ -426,13 +452,14 @@ onAuthStateChanged(auth, (user) => {
 	    console.log(data);
 	    let push_button = document.getElementById("arc-push");
 	    let manage_button = document.getElementById("manage_button");
-	    if (Object.values(data).includes(user.email)) {
+	    /* if (Object.values(data).includes(user.email)) {
 		   // enablePush();
 	    } 
 	    else {
 		// push_button.style.display = "none";
 		manage_button.style.display = "none";
 	    }
+      */
 	    
     });
     var data_ref = ref(database, "/channel/" + channel_id + "/basic_data/");
@@ -442,7 +469,7 @@ onAuthStateChanged(auth, (user) => {
       document.getElementById("title").innerHTML = data.name;
       channel_name = data.name;
     });
-    var message_ref = ref(database, "/channel/" + channel_id + "/messages/");
+    var message_ref = query(ref(database, "/channel/" + channel_id + "/messages/"), limitToLast(50));
     onChildAdded(message_ref, (snapshot) => {
       let message = snapshot.val();
       let message_box = document.getElementById("msg-contain");
@@ -456,7 +483,7 @@ onAuthStateChanged(auth, (user) => {
         let textNode = document.createTextNode(user_data.displayName + datetime);
         username_entry.appendChild(textNode);
         box.appendChild(username_entry);
-	if (message.type == null) {
+	if (message.type == "text") {
         	let content = document.createElement("p");
         	let textNode2 = document.createTextNode(message.content);
         	content.appendChild(textNode2);
