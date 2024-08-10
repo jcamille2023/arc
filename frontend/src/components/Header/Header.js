@@ -19,7 +19,7 @@ function Header({user}) {
                     </td>
                     <td>
                         <p onMouseEnter={() => {setHoverState(true)}} onMouseLeave={() => {setHoverState(false)}} id="username">{user.displayName}</p>
-                        (hoverState ? <Userbox user={user} /> : null)
+                        {hoverState ? (<Userbox user={user} />) : null}
                     </td>
                     <td>
                         <Button label="Dashboard" onClick={link('./dashboard')} />

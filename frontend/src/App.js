@@ -41,13 +41,13 @@ function App() {
     })
   },[userState])
 
-  return authState ? (<Login />) : (
+  return authState ? (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Dashboard user={user} />} />
+        <Route path="/" element={<Dashboard user={userState} />} />
       </Routes>
     </BrowserRouter>
-  );
+  ) : (<Login />);
 }
 
 export default App;

@@ -4,11 +4,12 @@ import Grid from "../../components/grid/Grid"
 import GridItem from "../../components/grid/GridItem"
 import Overlay from "../../components/overlay/Overlay";
 import getCircles from "../../scripts/getcircles";
+import Button from "../../components/button/Button";
 
 
 function NewCircle({func}) {
     return (
-        <div style='padding: 10px;'> 
+        <div style={{padding: '10px'}}> 
             <h1>Create an arc</h1>
             <h4>Name</h4>
             <input type='text' id='name'></input>
@@ -29,7 +30,7 @@ function Dashboard({user}) {
                         />
                     )))
         });
-    }, [])
+    }, [user])
     return (
         <>
             <Header user={user}/>
@@ -49,7 +50,6 @@ function Dashboard({user}) {
                         </Grid>
                     </section>
                 </div> 
-               // end overlay
             </div> 
         </>
     )

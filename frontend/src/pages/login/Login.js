@@ -1,29 +1,10 @@
 import React from "react";
-import { auth, app } from "../../App";
+import { auth } from "../../App";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 const provider = new GoogleAuthProvider();
 function login() {
-    signInWithPopup(auth,provider)
-  .then((result) => {
-    const credential = GoogleAuthProvider.credentialFromResult(result);
-    const token = credential.accessToken;
-    user = result.user;
-    console.log(credential);
-    console.log(token);
-    console.log(user);
-    // IdP data available using getAdditionalUserInfo(result)
-    // ...
-  }).catch((error) => {
-    // Handle Errors here.
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    // The email of the user's account used.
-    const email = error.customData.email;
-    // The AuthCredential type that was used.
-    const credential = GoogleAuthProvider.credentialFromError(error);
-    // ...
-  });
+    signInWithPopup(auth,provider);
 }
 
 function Login() {
@@ -33,21 +14,17 @@ function Login() {
                     <tbody>
                         <tr>
                             <td width="50%">
-                <h1 style="
-                color: white;
-            ">Arc</h1>
-                <h4 style="
-                color: white;
-            ">It all happens here</h4>
+                <h1 style={{color: 'white'}}>Arc</h1>
+                <h4 style={{color: 'white'}}>It all happens here</h4>
             </td>
-                            <td width="50%" style="
-                text-align: center;
-            ">
+                            <td width="50%" style={{
+                textAlign: 'center'
+            }}>
             <button className="gsi-material-button" id="sign-in-button" onClick={login}>
             <div className="gsi-material-button-state"></div>
         <div className="gsi-material-button-content-wrapper">
             <div className="gsi-material-button-icon">
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" xmlns:xlink="http://www.w3.org/1999/xlink" style="display: block;">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" style={{display: 'block'}}>
                 <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
                 <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
                 <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
