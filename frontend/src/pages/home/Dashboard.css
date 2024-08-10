@@ -1,0 +1,12 @@
+#add_arcs > div {
+    background-color: black;
+  
+  }
+  
+  #circles-table {
+    display: grid;
+    width:100%;
+    grid-template-columns: repeat(4, fit-content(500px));
+    justify-content: space-evenly;
+    grid-gap: 20px;
+  }

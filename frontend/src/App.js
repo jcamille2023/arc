@@ -8,7 +8,7 @@ import { getAuth, onAuthStateChanged} from "firebase/auth"
 
 // page imports
 import Login from './pages/login/Login';
-import Home from './pages/home/Home';
+import Dashboard from './pages/home/Dashboard';
 
 import './App.css';
 
@@ -44,7 +44,7 @@ function App() {
   return authState ? (<Login />) : (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home user={user} />} />
+        <Route path="/" element={<Dashboard user={user} />} />
       </Routes>
     </BrowserRouter>
   );
