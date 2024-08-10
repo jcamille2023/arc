@@ -1,0 +1,23 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-gap: 20px;
+}
+
+.grid-item {
+   /* background-color: #f2f2f2;*/
+    padding: 20px;
+    transition-duration: 0.3s;
+    margin: 20px;
+    border-radius: 25px;
+}
+
+.grid-item:hover {
+    background-color: white;
+    color: black;
+    scale: 1.2;
+}
+
+.grid-item:hover > button.btn-custom {
+    color:black;
+}

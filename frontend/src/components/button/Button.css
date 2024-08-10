@@ -1,0 +1,16 @@
+.btn-custom {
+    background-color: transparent;
+    color: white;
+    border: solid black 2px;
+    padding: 10px;
+    margin: 1.5%;
+    transition: 0.3s;
+    border-radius: 1%;
+}
+
+.btn-custom:hover {
+    background-color: black;
+    color:white !important;
+    cursor: pointer;
+    scale: 1.1;
+}

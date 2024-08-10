@@ -1,11 +1,16 @@
-import logo from './logo.svg';
+// React imports
 import React, {useState, useEffect} from 'react';
-import './App.css';
+import {BrowserRouter, Routes, Route} from 'react-router-dom'
+
+//Firebase imports
 import {initializeApp} from "firebase/app"
 import { getAuth, onAuthStateChanged} from "firebase/auth"
-import {BrowserRouter, Routes, Route} from 'react-router-dom'
+
+// page imports
 import Login from './pages/login/Login';
 import Home from './pages/home/Home';
+
+import './App.css';
 
 const firebaseConfig = {
   apiKey: "AIzaSyC5oq9fyPeoo8jVU-N07gYhjt2kFEBGqA8",
@@ -39,7 +44,7 @@ function App() {
   return authState ? (<Login />) : (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home user={user} />} />
       </Routes>
     </BrowserRouter>
   );

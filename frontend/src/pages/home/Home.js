@@ -1,8 +1,12 @@
 import React from "react";
+import Header from "../../components/Header/Header";
+function Home({user}) {
 
-function Home() {
     return (
-        <h1>work in progress</h1>
+        <>
+            <Header user={user}/>
+            <h1>work in progress</h1>
+        </>
     )
 }
 
