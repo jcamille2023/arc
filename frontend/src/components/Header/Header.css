@@ -1,0 +1,16 @@
+div#header {
+    background-color: black;
+}
+#header > table{
+    color: white;
+}
+
+#header > table > tbody > tr > td > a:hover {
+    color: black;
+    background-color: white;
+    scale: 1.2;
+}
+#header > table > tbody > tr > td > a {
+    transition: 0.5s;
+    color: white;
+}
