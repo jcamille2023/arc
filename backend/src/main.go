@@ -56,6 +56,12 @@ func main() {
 		fmt.Println("New device connected to server, waiting for requests...")
 		return nil
 	})
+	server.OnEvent("/", "join", func(s socketio.Conn, id string, token string) {
+		uid := getUIDfromToken(token)
+		if uid != "403" {
+
+		}
+	})
 
 }
 
