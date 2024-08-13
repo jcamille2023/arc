@@ -32,8 +32,9 @@ type User struct {
 	email     string
 	uid       string
 	photoURL  string
-	arcs      []string
-	circles   []string
+	arcs      []int
+	circles   []int
+	flags     []string
 }
 
 type PrivateUser struct {
@@ -108,7 +109,7 @@ func main() {
 		fmt.Println("New device connected to server, waiting for requests...")
 		return nil
 	})
-	server.OnEvent("/", "join", func(s socketio.Conn, id string, token string, circle bool) {
+	server.OnEvent("/", "join", func(s socketio.Conn, id int, token string, circle bool) {
 		uid := getUIDfromToken(token)
 		if uid != "403" {
 			var source string
@@ -117,17 +118,22 @@ func main() {
 			} else {
 				source = "arcs"
 			}
-			ref := arcConfig.database.NewRef(source + "/" + id)
+			ref := arcConfig.database.NewRef(source + "/" + strconv.Itoa(id))
 			cir := &Circle{}
 			if err := ref.Get(context.Background(), cir); err != nil {
 				s.Emit("error", "This Arc/Circle may not exist. Try again later.")
 			} else {
+				var success bool
 				for _, user := range cir.members {
 					if uid == user.uid {
-						s.Join(id)
+						s.Join(source + "/" + strconv.Itoa(id))
 						s.Emit(cir.name + ": Success")
+						success = true
 						break
 					}
+				}
+				if !success {
+					s.Emit("error", "You do not have permission to join this Arc/Circle. Please try again later.")
 				}
 			}
 		} else {
@@ -145,20 +151,33 @@ func main() {
 			if c.valid {
 				m, err := c.construct_message(uid, content)
 				if err != nil {
-					s.Emit(err.Error())
+					s.Emit("error", err.Error())
 					return
 				}
-				server.BroadcastToRoom("/", strconv.Itoa(id), "new message", m)
+
 				msg_err := post_message(m, c)
 				if msg_err != nil {
-					s.Emit("error", "posting message")
+					s.Emit("error", "Message failed to post.")
 				}
+				server.BroadcastToRoom("/", strconv.Itoa(id), "new message", m)
 			}
 		} else {
-			var arc Arc
-			ref := arcConfig.database.NewRef("/messages/arcs/" + strconv.Itoa(id))
-			if err := ref.Get(context.Background(), &arc); err != nil {
-				s.Emit("error", "This Arc may not exist. Try again later.")
+			a := get_arc(id)
+			if a.valid {
+				m, err := a.construct_message(uid, content)
+				if err != nil {
+					s.Emit("error", err.Error())
+					return
+				}
+				msg_err := post_message(m, a)
+				if msg_err != nil {
+					s.Emit("error", "Message failed to post.")
+				}
+
+				s.Emit("success!")
+				server.BroadcastToRoom("/", strconv.Itoa(id), "new message", m)
+			} else {
+				s.Emit("error", "This Arc may not exist.")
 			}
 
 		}
@@ -190,7 +209,7 @@ func (a Arc) construct_message(uid string, content string) (Message, error) {
 	if uid != a.members[0].uid && uid != a.members[1].uid {
 		return Message{}, fmt.Errorf("This User is not in this Arc.")
 	}
-	msg_id := int(time.Now().UnixMilli()) + 1000000*(1+rand.IntN(1000000))
+	msg_id := generate_timestamp_id()
 	u, err := getUserByUID(uid)
 	if err != nil {
 		return Message{}, fmt.Errorf("User does not exist.")
@@ -244,6 +263,37 @@ func getUIDfromToken(t string) string {
 }
 
 // setters to db
+func post_new_circle(name string, creator_uid string) error {
+	u, err := getUserByUID(creator_uid)
+	if err != nil {
+		return err
+	}
+	id := generate_timestamp_id()
+	c := Circle{
+		id:      id,
+		name:    name,
+		members: []PrivateUser{},
+		admin:   []PrivateUser{u.toPrivateUser()},
+	}
+
+	ref := arcConfig.database.NewRef("circles/" + strconv.Itoa(id))
+	if err := ref.Set(context.Background(), c); err != nil {
+		return fmt.Errorf("posting new Circle failed")
+	}
+	u.circles = append(u.circles, c.id)
+	m := make(map[string]interface{})
+	m["circles"] = u.circles
+
+	ref2 := arcConfig.database.NewRef("users/" + u.uid)
+	if err2 := ref2.Update(context.Background(), m); err2 != nil {
+		ref.Delete(context.Background())
+		return fmt.Errorf("Failed to add user to new Circle, discarding changes")
+	}
+	return nil
+}
+func post_new_arc_request(uid1 string, uid2 string) {
+	u1, err := getUserByUID()
+}
 
 // parameter v MUST be either an Arc or a Circle
 func post_message(m Message, v interface{}) error {
@@ -254,13 +304,55 @@ func post_message(m Message, v interface{}) error {
 	case Circle:
 		ref = arcConfig.database.NewRef("/messages/circles/" + strconv.Itoa(v.id) + "/" + strconv.Itoa(m.id))
 	default:
-		return fmt.Errorf("An object that was neither an Arc nor a Circle was provided.")
+		return fmt.Errorf("an object that was neither an Arc nor a Circle was provided")
 	}
 	if err := ref.Set(context.Background(), m); err != nil {
 		return fmt.Errorf("failed to post message: %v", err)
 	}
 	return nil
 
+}
+
+func (c Circle) change_name(n string, uid string) error {
+	if !contains(c.admin, uid) {
+		return fmt.Errorf("This action requires administrative privilege.")
+	}
+	ref := arcConfig.database.NewRef("/circles/" + strconv.Itoa(c.id))
+	m := make(map[string]interface{})
+	m["name"] = n
+	ref.Update(context.Background(), m)
+	return nil
+}
+
+func (c Circle) add_member(new_uid string, uid string) error {
+	if !contains(c.admin, uid) {
+		return fmt.Errorf("action requires administrative privilege")
+	}
+	ref := arcConfig.database.NewRef("/circles/" + strconv.Itoa(c.id))
+
+	u, err1 := getUserByUID(new_uid)
+	if err1 != nil {
+		return fmt.Errorf("user may not exist")
+	}
+	for _, s := range c.members {
+		if s.uid == new_uid {
+			return fmt.Errorf("user already in Circle")
+		}
+	}
+	m := make(map[string]interface{})
+	m["members"] = append(c.members, u.toPrivateUser())
+	if err := ref.Update(context.Background(), m); err != nil {
+		return fmt.Errorf("failed to add new user to Circle")
+	}
+
+	m2 := make(map[string]interface{})
+	m2["circles"] = append(u.circles, c.id)
+	ref2 := arcConfig.database.NewRef("users/" + new_uid)
+	if err2 := ref2.Update(context.Background(), m2); err2 != nil {
+		// m["members"] = m["members"][:len(m)-1]
+		return fmt.Errorf("Failed to add user to Circle")
+	}
+	return nil
 }
 
 // misc
@@ -284,4 +376,8 @@ func check_type(v interface{}) string {
 	default:
 		return "Neither Arc nor Circle."
 	}
+}
+
+func generate_timestamp_id() int {
+	return int(time.Now().UnixMilli()) + 1000000*(1+rand.IntN(1000000))
 }
