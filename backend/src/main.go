@@ -117,8 +117,11 @@ func main() {
 		if err != nil {
 			token_data, _ := arcConfig.auth.VerifyIDToken(context.Background(), token)
 			claims := token_data.Claims
-
-			u, err = create_user(claims["firstName"], claims["lastName"], claims["email"], claims["photoURL"], uid)
+			firstName, _ := claims["firstName"].(string)
+			lastName, _ := claims["lastName"].(string)
+			email, _ := claims["email"].(string)
+			photoURL, _ := claims["photoURL"].(string)
+			u, err = create_user(firstName, lastName, email, photoURL, uid)
 		}
 		s.Emit("user data", u)
 		return nil
@@ -452,18 +455,6 @@ func contains(slice []PrivateUser, item string) bool {
 		}
 	}
 	return false
-}
-
-// can ONLY check if given type is Arc or Circle.
-func check_type(v interface{}) string {
-	switch v.(type) {
-	case Arc:
-		return "Arc"
-	case Circle:
-		return "Circle"
-	default:
-		return "Neither Arc nor Circle."
-	}
 }
 
 func generate_timestamp_id() int {
