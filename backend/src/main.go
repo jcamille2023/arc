@@ -104,7 +104,23 @@ func main() {
 	server := socketio.NewServer(nil)
 	server.OnConnect("/", func(s socketio.Conn) error {
 		s.SetContext("")
-		fmt.Println("New device connected to server, waiting for requests...")
+		fmt.Println("New device connected to server")
+		url := s.URL()
+		token := url.Query().Get("token")
+		uid := getUIDfromToken(token)
+		if uid == "403" {
+			s.Emit("error", "Token verification failed")
+			s.Close()
+			return nil
+		}
+		u, err := getUserByUID(uid)
+		if err != nil {
+			token_data, _ := arcConfig.auth.VerifyIDToken(context.Background(), token)
+			claims := token_data.Claims
+
+			u, err = create_user(claims["firstName"], claims["lastName"], claims["email"], claims["photoURL"], uid)
+		}
+		s.Emit("user data", u)
 		return nil
 	})
 	server.OnEvent("/", "user data", func(s socketio.Conn, token string) {
@@ -379,6 +395,21 @@ func (c Circle) change_name(n string, uid string) error {
 	m["name"] = n
 	ref.Update(context.Background(), m)
 	return nil
+}
+
+func create_user(f string, l string, e string, p string, u string) (User, error) {
+	t := User{
+		firstName: f,
+		lastName:  l,
+		email:     e,
+		photoURL:  p,
+		uid:       u,
+	}
+	ref := arcConfig.database.NewRef("/users/" + t.uid)
+	if err := ref.Set(context.Background(), t); err != nil {
+		return User{}, fmt.Errorf("failed to add user to database")
+	}
+	return t, nil
 }
 
 func (c Circle) add_member(new_uid string, uid string) error {
