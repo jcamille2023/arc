@@ -4,12 +4,9 @@ import (
 	"context"
 	"fmt"
 	"log"
-
-	"time"
-
-	"strconv"
-
 	"math/rand/v2"
+	"strconv"
+	"time"
 
 	firebase "firebase.google.com/go/v4"
 	"firebase.google.com/go/v4/auth"
@@ -35,6 +32,7 @@ type User struct {
 	arcs      []int
 	circles   []int
 	flags     []string
+	requests  map[string]PrivateUser
 }
 
 type PrivateUser struct {
@@ -108,6 +106,19 @@ func main() {
 		s.SetContext("")
 		fmt.Println("New device connected to server, waiting for requests...")
 		return nil
+	})
+	server.OnEvent("/", "user data", func(s socketio.Conn, token string) {
+		uid := getUIDfromToken(token)
+		if uid == "403" {
+			s.Emit("error", "Token verification failed")
+			return
+		}
+		u, err := getUserByUID(uid)
+		if err != nil {
+			s.Emit("error", "User not found")
+			return
+		}
+		s.Emit("user data", u)
 	})
 	server.OnEvent("/", "join", func(s socketio.Conn, id int, token string, circle bool) {
 		uid := getUIDfromToken(token)
@@ -183,6 +194,37 @@ func main() {
 		}
 
 	})
+	server.OnEvent("/", "new circle", func(s socketio.Conn, name string, token string) {
+		uid := getUIDfromToken(token)
+		if uid == "403" {
+			s.Emit("error", "token verification failed")
+			return
+		}
+		c, err := post_new_circle(name, uid)
+		if err != nil {
+			s.Emit("error", err.Error())
+			return
+		}
+		s.Emit("circle posted", c.id)
+	})
+	server.OnEvent("/", "add member", func(s socketio.Conn, uid string, id int, token string) {
+		uid2 := getUIDfromToken(token)
+		if uid2 == "403" {
+			s.Emit("error", "Token verification failed")
+			return
+		}
+		c := get_circle(id)
+		if !c.valid {
+			s.Emit("error", "Circle not valid")
+			return
+		}
+		if err := c.add_member(uid, uid2); err != nil {
+			s.Emit("error", err.Error())
+			return
+		}
+		s.Emit("success")
+
+	})
 
 }
 
@@ -194,7 +236,7 @@ func (c Circle) construct_message(uid string, content string) (Message, error) {
 	msg_id := int(time.Now().UnixMilli()) + 1000000*(1+rand.IntN(1000000))
 	u, err := getUserByUID(uid)
 	if err != nil {
-		return Message{}, fmt.Errorf("User does not exist.")
+		return Message{}, fmt.Errorf("User not found")
 	}
 	return Message{
 		id:      msg_id,
@@ -212,7 +254,7 @@ func (a Arc) construct_message(uid string, content string) (Message, error) {
 	msg_id := generate_timestamp_id()
 	u, err := getUserByUID(uid)
 	if err != nil {
-		return Message{}, fmt.Errorf("User does not exist.")
+		return Message{}, fmt.Errorf("User not found")
 	}
 	return Message{
 		id:      msg_id,
@@ -263,10 +305,10 @@ func getUIDfromToken(t string) string {
 }
 
 // setters to db
-func post_new_circle(name string, creator_uid string) error {
+func post_new_circle(name string, creator_uid string) (Circle, error) {
 	u, err := getUserByUID(creator_uid)
 	if err != nil {
-		return err
+		return Circle{}, err
 	}
 	id := generate_timestamp_id()
 	c := Circle{
@@ -278,7 +320,7 @@ func post_new_circle(name string, creator_uid string) error {
 
 	ref := arcConfig.database.NewRef("circles/" + strconv.Itoa(id))
 	if err := ref.Set(context.Background(), c); err != nil {
-		return fmt.Errorf("posting new Circle failed")
+		return Circle{}, fmt.Errorf("posting new Circle failed")
 	}
 	u.circles = append(u.circles, c.id)
 	m := make(map[string]interface{})
@@ -287,12 +329,27 @@ func post_new_circle(name string, creator_uid string) error {
 	ref2 := arcConfig.database.NewRef("users/" + u.uid)
 	if err2 := ref2.Update(context.Background(), m); err2 != nil {
 		ref.Delete(context.Background())
-		return fmt.Errorf("Failed to add user to new Circle, discarding changes")
+		return Circle{}, fmt.Errorf("Failed to add user to new Circle, discarding changes")
+	}
+	return c, nil
+}
+func post_new_arc_request(uid1 string, uid2 string) error {
+	u1, err1 := getUserByUID(uid1)
+	if err1 != nil {
+		return fmt.Errorf("user who made request not found")
+	}
+	u2, err2 := getUserByUID(uid2)
+	if err2 != nil {
+		return err2
+	}
+	//TODO: Add ability to block users.
+	ref := arcConfig.database.NewRef("users/" + u2.uid + "/requests")
+	m := make(map[string]interface{})
+	m[u1.uid] = u1.toPrivateUser()
+	if err := ref.Update(context.Background(), m); err != nil {
+		return fmt.Errorf("failed to send request to create Arc")
 	}
 	return nil
-}
-func post_new_arc_request(uid1 string, uid2 string) {
-	u1, err := getUserByUID()
 }
 
 // parameter v MUST be either an Arc or a Circle
