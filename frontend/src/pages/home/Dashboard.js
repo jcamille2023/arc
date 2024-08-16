@@ -5,7 +5,7 @@ import GridItem from "../../components/grid/GridItem"
 import Overlay from "../../components/overlay/Overlay";
 import getCircles from "../../scripts/getcircles";
 import Button from "../../components/button/Button";
-
+import { auth, socket } from "../../App";
 
 function NewCircle({func}) {
     return (
@@ -22,15 +22,14 @@ function Dashboard({user}) {
     const [circles,setCircles] = useState(null);
     const [overlay,setOverlay] = useState(null)
     useEffect(() => {
-        getCircles(user).then((data) => {
-            setCircles(data.map((item) => (
-                        <GridItem 
-                            title={item.name}
-                            description={item.id}
-                        />
-                    )))
-        });
-    }, [user])
+        socket.on('user data',(u) => {
+            setCircles(u.circles)
+        })
+        socket.on('connect', () => {
+            console.log("Connected to server")
+            socket.emit("user data",user.getIdToken())
+        })  
+    }, [])
     return (
         <>
             <Header user={user}/>
@@ -53,6 +52,9 @@ function Dashboard({user}) {
             </div> 
         </>
     )
+}
+function submitNewCircle(name, user) {
+
 }
 
 export default Dashboard;

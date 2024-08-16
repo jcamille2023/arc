@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand/v2"
+	"net/http"
 	"strconv"
 	"time"
 
@@ -30,7 +31,7 @@ type User struct {
 	uid       string
 	photoURL  string
 	arcs      []int
-	circles   []int
+	circles   []MiniCircle
 	flags     []string
 	requests  map[string]PrivateUser
 }
@@ -57,6 +58,11 @@ type Circle struct {
 	members []PrivateUser
 	admin   []PrivateUser
 	valid   bool
+}
+type MiniCircle struct {
+	name  string
+	id    int
+	valid bool
 }
 type Arc struct {
 	id      int
@@ -173,7 +179,7 @@ func main() {
 	server.OnEvent("/", "send_message", func(s socketio.Conn, content string, token string, id int, circle bool) {
 		uid := getUIDfromToken(token)
 		if uid == "403" {
-			s.Emit("Token verification failed")
+			s.Emit("error", "token verification failed")
 			return
 		}
 		if circle {
@@ -213,6 +219,7 @@ func main() {
 		}
 
 	})
+	// TODO: add a leave room event
 	server.OnEvent("/", "new circle", func(s socketio.Conn, name string, token string) {
 		uid := getUIDfromToken(token)
 		if uid == "403" {
@@ -226,6 +233,7 @@ func main() {
 		}
 		s.Emit("circle posted", c.id)
 	})
+	// TODO: add a arc request event
 	server.OnEvent("/", "add member", func(s socketio.Conn, uid string, id int, token string) {
 		uid2 := getUIDfromToken(token)
 		if uid2 == "403" {
@@ -244,6 +252,10 @@ func main() {
 		s.Emit("success")
 
 	})
+	go server.Serve()
+	defer server.Close()
+	fmt.Println("Serving at localhost:3000...")
+	log.Fatal(http.ListenAndServe(":3000", nil))
 
 }
 
@@ -296,6 +308,14 @@ func get_circle(id int) Circle {
 
 }
 
+func (c Circle) get_mini_circle() MiniCircle {
+	return MiniCircle{
+		name:  c.name,
+		id:    c.id,
+		valid: c.valid,
+	}
+}
+
 func get_arc(id int) Arc {
 	var a Arc
 	ref := arcConfig.database.NewRef("arcs/" + strconv.Itoa(id))
@@ -336,15 +356,16 @@ func post_new_circle(name string, creator_uid string) (Circle, error) {
 		members: []PrivateUser{},
 		admin:   []PrivateUser{u.toPrivateUser()},
 	}
-
+	//posts circle
 	ref := arcConfig.database.NewRef("circles/" + strconv.Itoa(id))
 	if err := ref.Set(context.Background(), c); err != nil {
 		return Circle{}, fmt.Errorf("posting new Circle failed")
 	}
-	u.circles = append(u.circles, c.id)
+	// adds circle to user profile
+	u.circles = append(u.circles, c.get_mini_circle())
 	m := make(map[string]interface{})
 	m["circles"] = u.circles
-
+	// posts modified user profile
 	ref2 := arcConfig.database.NewRef("users/" + u.uid)
 	if err2 := ref2.Update(context.Background(), m); err2 != nil {
 		ref.Delete(context.Background())
@@ -391,7 +412,7 @@ func post_message(m Message, v interface{}) error {
 
 func (c Circle) change_name(n string, uid string) error {
 	if !contains(c.admin, uid) {
-		return fmt.Errorf("This action requires administrative privilege.")
+		return fmt.Errorf("action requires administrative privilege")
 	}
 	ref := arcConfig.database.NewRef("/circles/" + strconv.Itoa(c.id))
 	m := make(map[string]interface{})
@@ -437,7 +458,7 @@ func (c Circle) add_member(new_uid string, uid string) error {
 	}
 
 	m2 := make(map[string]interface{})
-	m2["circles"] = append(u.circles, c.id)
+	m2["circles"] = append(u.circles, c.get_mini_circle())
 	ref2 := arcConfig.database.NewRef("users/" + new_uid)
 	if err2 := ref2.Update(context.Background(), m2); err2 != nil {
 		// m["members"] = m["members"][:len(m)-1]

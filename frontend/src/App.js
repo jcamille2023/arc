@@ -10,6 +10,9 @@ import { getAuth, onAuthStateChanged} from "firebase/auth"
 import Login from './pages/login/Login';
 import Dashboard from './pages/home/Dashboard';
 
+//server connection import
+import {io} from "socket.io-client"
+
 import './App.css';
 
 const firebaseConfig = {
@@ -24,6 +27,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+let socket;
 
 function App() {
   const [authState,setAuthState] = useState(false);
@@ -33,6 +37,11 @@ function App() {
       if(user) {
         setUserState(user);
         setAuthState(true);
+        socket = io("http://localhost:3000", {
+          query: {
+            token: user.getIdToken()
+          }
+        })
       }
       else {
         setAuthState(false);
@@ -51,4 +60,4 @@ function App() {
 }
 
 export default App;
-export {app, auth}
+export {app, auth, socket}
