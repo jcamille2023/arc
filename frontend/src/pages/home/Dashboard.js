@@ -1,19 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Header from "../../components/Header/Header";
 import Grid from "../../components/grid/Grid"
-import GridItem from "../../components/grid/GridItem"
+//import GridItem from "../../components/grid/GridItem"
 import Overlay from "../../components/overlay/Overlay";
-import getCircles from "../../scripts/getcircles";
+//import getCircles from "../../scripts/getcircles";
 import Button from "../../components/button/Button";
-import { auth, socket } from "../../App";
-
+import {socket } from "../../App";
+let submitNewCircle;
 function NewCircle({func}) {
+    let name_ref = useRef()
     return (
         <div style={{padding: '10px'}}> 
             <h1>Create an arc</h1>
             <h4>Name</h4>
-            <input type='text' id='name'></input>
-            <Button label="Submit" />
+            <input ref={name_ref} type='text' id='name'></input>
+            <Button label="Submit" onClick={() => {
+                const nameValue = name_ref.current.value
+                submitNewCircle(nameValue)
+            }}/>
             <Button label="Cancel" onClick={func(null)} />
         </div>
     );
@@ -21,15 +25,21 @@ function NewCircle({func}) {
 function Dashboard({user}) {
     const [circles,setCircles] = useState(null);
     const [overlay,setOverlay] = useState(null)
+    
     useEffect(() => {
-        socket.on('user data',(u) => {
-            setCircles(u.circles)
-        })
-        socket.on('connect', () => {
-            console.log("Connected to server")
-            socket.emit("user data",user.getIdToken())
-        })  
-    }, [])
+        if(socket) {
+            socket.on('user data',(u) => {
+                setCircles(u.circles)
+            })
+            socket.on('connect', () => {
+                console.log("Connected to server")
+                socket.emit("user data",user.getIdToken())
+            })
+            submitNewCircle = (name) => {
+                socket.emit('new circle',name,user.getIdToken())
+            }
+        }
+    }, [user,socket])
     return (
         <>
             <Header user={user}/>
@@ -53,8 +63,6 @@ function Dashboard({user}) {
         </>
     )
 }
-function submitNewCircle(name, user) {
 
-}
 
 export default Dashboard;

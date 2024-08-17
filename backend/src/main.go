@@ -14,6 +14,7 @@ import (
 	"firebase.google.com/go/v4/db"
 	"firebase.google.com/go/v4/messaging"
 	socketio "github.com/googollee/go-socket.io"
+	"github.com/rs/cors"
 )
 
 var arcConfig firebaseConfig
@@ -252,8 +253,14 @@ func main() {
 		s.Emit("success")
 
 	})
-	go server.Serve()
-	defer server.Close()
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:3001", "https://arc.jcamille.tech"}, // Change this to your allowed origins
+		AllowCredentials: true,
+		AllowedMethods:   []string{"GET", "POST"},
+		AllowedHeaders:   []string{"Content-Type", "Access-Control-Allow-Origin"},
+	})
+	handler := c.Handler(server)
+	http.Handle("/socket.io", handler)
 	fmt.Println("Serving at localhost:3000...")
 	log.Fatal(http.ListenAndServe(":3000", nil))
 
