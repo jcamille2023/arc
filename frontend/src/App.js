@@ -40,8 +40,10 @@ function App() {
         user.getIdToken().then((token) => {
           socket = io("http://localhost:3000", {
             query: {
-              token: user.getIdToken()
-            }
+              token: token
+            },
+            transports: ['websocket'],
+            upgrade: false
           })
         })
       }

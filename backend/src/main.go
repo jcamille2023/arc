@@ -14,6 +14,9 @@ import (
 	"firebase.google.com/go/v4/db"
 	"firebase.google.com/go/v4/messaging"
 	socketio "github.com/googollee/go-socket.io"
+	"github.com/googollee/go-socket.io/engineio"
+	"github.com/googollee/go-socket.io/engineio/transport"
+	"github.com/googollee/go-socket.io/engineio/transport/websocket"
 	"github.com/rs/cors"
 )
 
@@ -107,8 +110,22 @@ func main() {
 	}
 
 	arcConfig := firebaseConfig{client, db, msg}
-
-	server := socketio.NewServer(nil)
+	// Set up CORS
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:3001", "https://arc.jcamille.tech"},
+		AllowCredentials: true,
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"*"},
+	})
+	server := socketio.NewServer(&engineio.Options{
+		Transports: []transport.Transport{
+			&websocket.Transport{
+				CheckOrigin: func(r *http.Request) bool {
+					return true // Be cautious with this in production
+				},
+			},
+		},
+	})
 	server.OnConnect("/", func(s socketio.Conn) error {
 		s.SetContext("")
 		fmt.Println("New device connected to server")
@@ -253,16 +270,19 @@ func main() {
 		s.Emit("success")
 
 	})
-	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:3001", "https://arc.jcamille.tech"}, // Change this to your allowed origins
-		AllowCredentials: true,
-		AllowedMethods:   []string{"GET", "POST"},
-		AllowedHeaders:   []string{"Content-Type", "Access-Control-Allow-Origin"},
-	})
-	handler := c.Handler(server)
-	http.Handle("/socket.io", handler)
+	mux := http.NewServeMux()
+	mux.Handle("/socket.io/", server)
+	handler := c.Handler(mux)
+
 	fmt.Println("Serving at localhost:3000...")
-	log.Fatal(http.ListenAndServe(":3000", nil))
+	log.Fatal(http.ListenAndServe(":3000", handler))
+
+	go func() {
+		if err := server.Serve(); err != nil {
+			log.Fatalf("Socket.IO server error: %v", err)
+		}
+	}()
+	defer server.Close()
 
 }
 

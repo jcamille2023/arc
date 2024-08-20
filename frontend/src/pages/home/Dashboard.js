@@ -39,7 +39,7 @@ function Dashboard({user}) {
                 socket.emit('new circle',name,user.getIdToken())
             }
         }
-    }, [user,socket])
+    }, [user])
     return (
         <>
             <Header user={user}/>
