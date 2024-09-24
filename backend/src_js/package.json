@@ -1,0 +1,18 @@
+{
+  "name": "arc-backend",
+  "version": "1.0.0",
+  "description": "The backend system for Arc.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "firebase-admin": "^12.5.0",
+    "socket.io": "^4.8.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.2"
+  }
+}
