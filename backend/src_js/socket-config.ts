@@ -6,7 +6,7 @@ import {createServer} from "http"
 function initServer() {
     let io = newSocketServer();
     io.on('connection', (socket)=>{
-        socket.on('join room',(uid:string,id:string)=>{
+        socket.on('join room',(uid:string,id:number,type:string)=>{
 
         })
     })

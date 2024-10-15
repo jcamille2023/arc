@@ -7,16 +7,26 @@ class Request {
         sid: string,
         [key: string]: any,
     }
+    constructor(type,sid,request) {
+        this.type = type;
+        this.request = request;
+        this.request.sid = sid;
+        this.rid = Math.floor(Math.random()*1000000) + Number(Date.now());
+    }
 }
-
+class Room {
+    public name:string;
+    public id:number;
+    public type:string;
+}
 class User {
     public displayName: string;
     public email: string;
     public uid: string;
     public photoURL: string;
 
-    public arcs: object[];
-    public circles: object[];
+    public arcs: Room[];
+    public circles: Room[];
     private flags: string[];
     private requests: object[];
 
@@ -76,19 +86,11 @@ class User {
         ref.set(this);
     }
     // THIS OBJECT SHOULD VERY MUCH BE SANITIZED..
-    addRequest(sid: string, type: string, request: Request): boolean {
-        let rid = Math.floor(Math.random()*1000000) + Number(Date.now());
-        if(!(request instanceof Request)) {
-            return false;
-        }
-        this.requests.push({rid: rid, type: type, request: request});
+    addRequest(sid: string, type: string, request: object): boolean {
+        let r = new Request(type,sid,request)
+        this.requests.push(r);
         this.updateUser();
         return true;
-    }
-    // sending from this object to recipient user
-    sendUserRequest(rid: string, type: string, request: Request) {
-        let u = new User(rid);
-        u.addRequest(this.uid,type,request)
     }
 }
 
@@ -121,7 +123,7 @@ class Circle {
         let u = new User(sid)
         this.members.push(u);
         this.updateCircle();
-        u.circles.push({id: this.id, name: this.name})
+        u.circles.push({id: this.id, name: this.name,type: "circle"})
         u.updateUser()
     }
     removeUserFromCircle(uid: string, sid: string) {
@@ -154,5 +156,77 @@ class Circle {
         })
     }
 }
+class PublicUser {
+    public displayName: string;
+    public email: string;
+    public uid: string;
+    public photoURL: string;
+    constructor(u: User) {
+        this.displayName = u.displayName;
+        this.email = u.email;
+        this.uid = u.uid;
+        this.photoURL = u.photoURL;
+    }
+}
+class Arc {
+    public id: number
+    public members: User[]
+    public valid: boolean
+
+    constructor(...args) {
+        if(args.length==2) {
+            this.id = Math.floor(Math.random()*1000000) + Number(Date.now());
+            const u1 = new User(args[0])
+            this.members = [u1];
+            this.valid = true;
+            const u2 = new User(args[1]);
+            if(!u2.addRequest(u1.uid,"new Arc",{})) this.valid = false;
+        }
+        if(args.length==1) {
+            this.id=args[0];
+
+        }
+    }
+    deleteArc(uid: string) {
+        if(!this.members.some(member => member.uid === uid)) {
+            return null
+        }
+        this.members = this.members.filter(member => member.uid !== uid);
+        let sid = this.members[0];
+        let u = new User(sid);
+        u.arcs = u.arcs.filter(arc => arc.id !== this.id);
+        u.updateUser();
+        let r = db.ref("/arcs/" + this.id);
+        r.set(null);
+    }
+}
+class Message {
+    public id: number;
+	content: string
+	author: PublicUser
+	date: string;
+    arc: boolean;
+    pid: number;
+    constructor(content: string, author: PublicUser, arc: boolean, pid: number) {
+        this.id = Math.floor(Math.random()*1000000) + Number(Date.now());
+        this.author = author;
+        this.date = String(new Date());
+        this.arc = arc;
+        this.pid = pid;
+        this.updateMessage(content, author.uid);
+    }
+    updateMessage(content: string, uid: string) {
+        if(this.author.uid != uid) return null;
+        this.content = content;
+        let ref = db.ref(this.arc ? "/arcs/" : "/circles/" + this.pid + "/messages/" + this.id);
+        ref.set(this);
+    }
+    deleteMessage(uid: string) {
+        if(this.author.uid != uid) return null;
+        let ref = db.ref(this.arc ? "/arcs/" : "/circles/" + this.pid + "/messages/" + this.id);
+        ref.set(null);
+    }
+}
 
 
+module.exports = {Arc, Circle, Message, User, Room, Request}

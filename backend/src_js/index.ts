@@ -6,11 +6,10 @@ let app, db, auth;
 function main(): number {
     app = initializeApp({
         credential: applicationDefault(),
-        databaseURL: "BLANK FOR NOW"
+        databaseURL: "https://arc-by-insight-default-rtdb.firebaseio.com/"
     });
     auth = getAuth(app);
     db = getDatabase(app);
-    
 
     return 0
 }
