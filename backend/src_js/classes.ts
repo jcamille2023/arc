@@ -15,9 +15,21 @@ class Request {
     }
 }
 class Room {
-    public name:string;
     public id:number;
-    public type:string;
+    public members: User[]
+    public valid: boolean;
+    public type: string | null;
+    getMessages(arc: boolean) {
+        let ref = db.ref("messages/" + arc ? "/arcs/" : "/circles/" + this.id);
+        let messages: string[] = [];
+        ref.once('value', (snapshot) => {
+            snapshot = snapshot.val();
+            for(let msg in snapshot) {
+                 messages.push(msg);
+            }
+            return messages;
+        })
+    }
 }
 class User {
     public displayName: string;
@@ -94,14 +106,13 @@ class User {
     }
 }
 
-class Circle {
+class Circle extends Room {
     public name: string
-    public id: number
-    public members: User[]
     public admin: User[]
-    public valid: boolean
-
+    // takes either 1 or 2 args; if 1 arg, circle assumes arg is ID number and gets circle from db; if 2
+    // args, constructor makes new circle with first arg being name and second arg being uid
     constructor(...args) {
+        super();
         if(args.length==2) {
             this.name = args[0];
             this.id = Math.floor(Math.random()*1000000) + Number(Date.now());
@@ -113,6 +124,7 @@ class Circle {
         }
         if(args.length==1) {
             this.id=args[0];
+            this.refreshCircle();
 
         }
     }
@@ -168,12 +180,11 @@ class PublicUser {
         this.photoURL = u.photoURL;
     }
 }
-class Arc {
-    public id: number
-    public members: User[]
-    public valid: boolean
 
+
+class Arc extends Room {
     constructor(...args) {
+        super();
         if(args.length==2) {
             this.id = Math.floor(Math.random()*1000000) + Number(Date.now());
             const u1 = new User(args[0])
@@ -184,8 +195,19 @@ class Arc {
         }
         if(args.length==1) {
             this.id=args[0];
+            this.refreshArc();
+            let r = db.ref("/arcs/" + this.id);
+            r.set(this);
 
         }
+    }
+    refreshArc() {
+        let ref = db.ref("/circles/" + this.id);
+        ref.once('value', (data) => {
+            data = data.val();
+            this.members = data.members;
+            this.valid = data.valid;
+        })
     }
     deleteArc(uid: string) {
         if(!this.members.some(member => member.uid === uid)) {
@@ -199,6 +221,7 @@ class Arc {
         let r = db.ref("/arcs/" + this.id);
         r.set(null);
     }
+
 }
 class Message {
     public id: number;
@@ -206,27 +229,27 @@ class Message {
 	author: PublicUser
 	date: string;
     arc: boolean;
-    pid: number;
-    constructor(content: string, author: PublicUser, arc: boolean, pid: number) {
+    rid: number; // room id
+    constructor(content: string, author: PublicUser, arc: boolean, rid: number) {
         this.id = Math.floor(Math.random()*1000000) + Number(Date.now());
         this.author = author;
         this.date = String(new Date());
         this.arc = arc;
-        this.pid = pid;
-        this.updateMessage(content, author.uid);
+        this.rid = rid;
+        this.updateMessage(content, author.uid); // will update message in server
     }
     updateMessage(content: string, uid: string) {
         if(this.author.uid != uid) return null;
         this.content = content;
-        let ref = db.ref(this.arc ? "/arcs/" : "/circles/" + this.pid + "/messages/" + this.id);
+        let ref = db.ref(this.arc ? "/arcs/" : "/circles/" + this.rid + "/messages/" + this.id);
         ref.set(this);
     }
     deleteMessage(uid: string) {
         if(this.author.uid != uid) return null;
-        let ref = db.ref(this.arc ? "/arcs/" : "/circles/" + this.pid + "/messages/" + this.id);
+        let ref = db.ref(this.arc ? "/arcs/" : "/circles/" + this.rid + "/messages/" + this.id);
         ref.set(null);
     }
 }
 
 
-module.exports = {Arc, Circle, Message, User, Room, Request}
+export {Arc, Circle, Message, User, Room, Request, PublicUser}

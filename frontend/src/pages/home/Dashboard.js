@@ -33,7 +33,6 @@ function Dashboard({user}) {
             })
             socket.on('connect', () => {
                 console.log("Connected to server")
-                socket.emit("user data",user.getIdToken())
             })
             submitNewCircle = (name) => {
                 socket.emit('new circle',name,user.getIdToken())
