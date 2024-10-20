@@ -6,7 +6,7 @@ let app, db, auth;
 function main(): number {
     app = initializeApp({
         credential: applicationDefault(),
-        databaseURL: "https://arc-by-insight-default-rtdb.firebaseio.com/"
+        databaseURL: "https://arc-by-insight-default-rtdb.firebaseio.com/",
     });
     auth = getAuth(app);
     db = getDatabase(app);

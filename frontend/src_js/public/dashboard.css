@@ -1,0 +1,51 @@
+
+
+section#open-section {
+    color: white;
+}
+
+body {
+    margin: 0px;
+    background-image: linear-gradient(65deg, #000092,#0e0f24);
+}
+
+
+div#wrapper {
+    margin: 14px;
+}
+
+
+.container {
+  position: relative;
+  margin: 30px;
+  height:100%
+}
+
+.box {
+  width: 100%;
+  height: 92%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 1.0;
+}
+
+.overlay {
+  z-index: 9;
+  text-align: center;
+  width: 90%;
+  height: 90%
+}
+
+#add_arcs > div {
+    background-color: black;
+  
+}
+
+#channels-table {
+  display: grid;
+  width:100%;
+  grid-template-columns: repeat(4, fit-content(500px));
+  justify-content: space-evenly;
+  grid-gap: 20px;
+}

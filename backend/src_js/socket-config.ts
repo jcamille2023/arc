@@ -11,26 +11,32 @@ async function getUIDfromToken(token) {
         return u.uid;
 
     } catch(error) {
-        return new Error("User ID could not be verified.");
+        console.error(error)
+        throw new Error("User ID could not be verified.");
     }
 } 
 
 function initServer() {
     console.log("initalizing SocketIO server")
     let io = newSocketServer();
-    io.on('connection', (socket)=>{
+    io.on('connection', async (socket)=>{
         console.log("New connection")
         // token verification
         let uid;
         try {
-            uid = getUIDfromToken(socket.handshake.auth.token);
+            console.log("getting user UID")
+            console.log(socket.handshake.auth.token)
+            uid = await getUIDfromToken(socket.handshake.auth.token);
         } catch(error) {
+            console.error("There has been an error:",error)
             socket.emit("error",error);
             socket.disconnect();
             return;
         }
         let u = new User(uid);
-        socket.emit("user data", u);
+        await u.refreshUser()
+        console.log("emitting user data event")
+        socket.emit('user data', JSON.stringify(u));
         // room join listener; should probably add feature to add members from get
         socket.on('new circle', async(token:string,name:string) => {
             let uid;

@@ -9,7 +9,7 @@ var app, db, auth;
 function main() {
     app = (0, app_1.initializeApp)({
         credential: (0, app_1.applicationDefault)(),
-        databaseURL: "https://arc-by-insight-default-rtdb.firebaseio.com/"
+        databaseURL: "https://arc-by-insight-default-rtdb.firebaseio.com/",
     });
     exports.auth = auth = (0, auth_1.getAuth)(app);
     exports.db = db = (0, database_1.getDatabase)(app);

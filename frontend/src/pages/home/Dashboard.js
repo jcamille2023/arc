@@ -29,6 +29,7 @@ function Dashboard({user}) {
     useEffect(() => {
         if(socket) {
             socket.on('user data',(u) => {
+                console.log("User data received:", u);
                 setCircles(u.circles)
             })
             socket.on('connect', () => {

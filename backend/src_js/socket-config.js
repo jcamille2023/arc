@@ -55,7 +55,8 @@ function getUIDfromToken(token) {
                     return [2 /*return*/, u.uid];
                 case 2:
                     error_1 = _a.sent();
-                    return [2 /*return*/, new Error("User ID could not be verified.")];
+                    console.error(error_1);
+                    throw new Error("User ID could not be verified.");
                 case 3: return [2 /*return*/];
             }
         });
@@ -65,80 +66,98 @@ function initServer() {
     var _this = this;
     console.log("initalizing SocketIO server");
     var io = newSocketServer();
-    io.on('connection', function (socket) {
-        console.log("New connection");
-        // token verification
-        var uid;
-        try {
-            uid = getUIDfromToken(socket.handshake.auth.token);
-        }
-        catch (error) {
-            socket.emit("error", error);
-            socket.disconnect();
-            return;
-        }
-        var u = new classes_1.User(uid);
-        socket.emit("user data", u);
-        // room join listener; should probably add feature to add members from get
-        socket.on('new circle', function (token, name) { return __awaiter(_this, void 0, void 0, function () {
-            var uid, c;
-            return __generator(this, function (_a) {
-                try {
-                    uid = getUIDfromToken(token);
-                }
-                catch (error) {
-                    socket.emit("error", error);
+    io.on('connection', function (socket) { return __awaiter(_this, void 0, void 0, function () {
+        var uid, error_2, u;
+        var _this = this;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    console.log("New connection");
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    console.log("getting user UID");
+                    console.log(socket.handshake.auth.token);
+                    return [4 /*yield*/, getUIDfromToken(socket.handshake.auth.token)];
+                case 2:
+                    uid = _a.sent();
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_2 = _a.sent();
+                    console.error("There has been an error:", error_2);
+                    socket.emit("error", error_2);
+                    socket.disconnect();
                     return [2 /*return*/];
-                }
-                c = new classes_1.Circle(name, uid);
-                socket.emit("success", { type: "new circle", id: c.id });
-                return [2 /*return*/];
-            });
-        }); });
-        // need to add new Arc system
-        socket.on('join room', function (token, id, arc) { return __awaiter(_this, void 0, void 0, function () {
-            var uid, t;
-            return __generator(this, function (_a) {
-                try {
-                    uid = getUIDfromToken(token);
-                }
-                catch (error) {
-                    socket.emit("error", error);
+                case 4:
+                    u = new classes_1.User(uid);
+                    return [4 /*yield*/, u.refreshUser()];
+                case 5:
+                    _a.sent();
+                    console.log("emitting user data event");
+                    socket.emit('user data', JSON.stringify(u));
+                    // room join listener; should probably add feature to add members from get
+                    socket.on('new circle', function (token, name) { return __awaiter(_this, void 0, void 0, function () {
+                        var uid, c;
+                        return __generator(this, function (_a) {
+                            try {
+                                uid = getUIDfromToken(token);
+                            }
+                            catch (error) {
+                                socket.emit("error", error);
+                                return [2 /*return*/];
+                            }
+                            c = new classes_1.Circle(name, uid);
+                            socket.emit("success", { type: "new circle", id: c.id });
+                            return [2 /*return*/];
+                        });
+                    }); });
+                    // need to add new Arc system
+                    socket.on('join room', function (token, id, arc) { return __awaiter(_this, void 0, void 0, function () {
+                        var uid, t;
+                        return __generator(this, function (_a) {
+                            try {
+                                uid = getUIDfromToken(token);
+                            }
+                            catch (error) {
+                                socket.emit("error", error);
+                                return [2 /*return*/];
+                            }
+                            t = arc ? new classes_1.Arc(id) : new classes_1.Circle(id);
+                            if (t.members.some(function (member) { return member.uid === uid; })) {
+                                socket.join(arc ? "arc_" + id : "circle_" + id);
+                                socket.emit('success', { type: "join room", room: arc ? "arc_" + id : "circle_" + id });
+                            }
+                            else {
+                                socket.emit('error', { message: 'User not found in the room' });
+                            }
+                            return [2 /*return*/];
+                        });
+                    }); });
+                    socket.on('new message', function (token, rid, arc, content) { return __awaiter(_this, void 0, void 0, function () {
+                        var uid, room, u, msg;
+                        return __generator(this, function (_a) {
+                            try {
+                                uid = getUIDfromToken(token);
+                            }
+                            catch (error) {
+                                socket.emit("error", error);
+                                return [2 /*return*/];
+                            }
+                            room = arc ? new classes_1.Arc(rid) : new classes_1.Circle(rid);
+                            if (!room.members.some(function (member) { return member.uid === uid; })) {
+                                socket.emit("error", { message: "User not a member of room" });
+                                return [2 /*return*/];
+                            }
+                            u = new classes_1.PublicUser(new classes_1.User(uid));
+                            msg = new classes_1.Message(content, u, arc, rid);
+                            socket.to(arc ? "arc_" : "circle_" + rid).emit("new message", msg);
+                            return [2 /*return*/];
+                        });
+                    }); });
                     return [2 /*return*/];
-                }
-                t = arc ? new classes_1.Arc(id) : new classes_1.Circle(id);
-                if (t.members.some(function (member) { return member.uid === uid; })) {
-                    socket.join(arc ? "arc_" + id : "circle_" + id);
-                    socket.emit('success', { type: "join room", room: arc ? "arc_" + id : "circle_" + id });
-                }
-                else {
-                    socket.emit('error', { message: 'User not found in the room' });
-                }
-                return [2 /*return*/];
-            });
-        }); });
-        socket.on('new message', function (token, rid, arc, content) { return __awaiter(_this, void 0, void 0, function () {
-            var uid, room, u, msg;
-            return __generator(this, function (_a) {
-                try {
-                    uid = getUIDfromToken(token);
-                }
-                catch (error) {
-                    socket.emit("error", error);
-                    return [2 /*return*/];
-                }
-                room = arc ? new classes_1.Arc(rid) : new classes_1.Circle(rid);
-                if (!room.members.some(function (member) { return member.uid === uid; })) {
-                    socket.emit("error", { message: "User not a member of room" });
-                    return [2 /*return*/];
-                }
-                u = new classes_1.PublicUser(new classes_1.User(uid));
-                msg = new classes_1.Message(content, u, arc, rid);
-                socket.to(arc ? "arc_" : "circle_" + rid).emit("new message", msg);
-                return [2 /*return*/];
-            });
-        }); });
-    });
+            }
+        });
+    }); });
 }
 function newSocketServer() {
     // add cors config here

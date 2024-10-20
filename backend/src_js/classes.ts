@@ -75,22 +75,21 @@ class User {
         
     }
     // entirely replaces local user object with user object from database
-    refreshUser() {
+    async refreshUser() {
         if(this.uid == null || this.uid == '') {
             console.error("uid is null")
             return false
         }
         let ref = db.ref("/users/" + this.uid);
-        ref.once('value', (data) => {
-            data = data.val();
-            this.displayName = data.displayName;
-            this.email = data.email;
-            this.photoURL = data.photoURL;
-            this.arcs = data.arcs;
-            this.circles = data.circles;
-            this.flags = data.flags;
-            this.requests = this.requests;
-        })
+        let data = await ref.once('value') 
+        data = data.val();
+        this.displayName = data.displayName;
+        this.email = data.email;
+        this.photoURL = data.photoURL;
+        this.arcs = data.arcs;
+        this.circles = data.circles;
+        this.flags = data.flags;
+        this.requests = this.requests;
     }
     // entirely replaces the user object on database with local user
     updateUser() {

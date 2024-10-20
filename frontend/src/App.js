@@ -11,7 +11,7 @@ import Login from './pages/login/Login';
 import Dashboard from './pages/home/Dashboard';
 
 //server connection import
-import * as io from "socket.io-client"
+import {io} from "socket.io-client"
 
 import './App.css';
 
@@ -39,7 +39,7 @@ function App() {
         setAuthState(true);
         user.getIdToken().then((token) => {
           socket = io("http://localhost:3000", {
-            query: {
+            auth: {
               token: token
             },
             transports: ['websocket'],

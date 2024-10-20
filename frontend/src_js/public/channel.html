@@ -1,0 +1,60 @@
+<html><head>
+    <title id="title">Channel - Arc</title>
+    <link rel="stylesheet" type="text/css" href="channel.css">
+    <link rel="stylesheet" type="text/css" href="stylesheet.css">
+    <link rel="manifest" href="manifest.json" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head><body>
+    <script src="channel.js" type="module"></script>
+    <script src="send_pictures.js" type="module"></script>
+    
+    <div id="header">
+        <table>
+            <tbody>
+                <tr>
+                <td width="88.25%">
+                    <h2>Arc</h2>
+                </td>
+                <td>
+                    <p id="username">Jossaya Camille</p>
+                </td>
+                <td>
+                    <a href="dashboard">Dashboard</a>
+                </td>
+                <td><a href="javascript:logout()">Sign out</a></td>
+</tr>
+            </tbody>
+        </table>
+</div>
+<div id="container" class="container">
+<div id="main" class="box">
+<section id="open-section">
+        <h1 id="channel_name">Channel name</h1>
+        <p id="success"></p>
+    <button id="manage_button" onclick="manage_users()">Manage arc</button>
+    <button id="arc-push" onclick="requestPermission()">Enable Arc Push</button>
+    </section>
+    
+<section id="chatbox">
+    <div id="channels-table">
+            <div id="messagelog-row">
+                <div id="msg-contain"></div>
+            </div>
+            <div id="typing-row"></div>
+                    <div id="upload">
+                                    <input type="text" id="messagebox" onfocus="this.value=''" value="Type here">
+                                
+                                
+                                    <button id="send">Send</button>
+                                
+                            
+                                    <button onclick="start_upload()">Upload</button>
+                    </div>
+    </div>
+</section>
+</div> <!-- end box -->
+<div id="manage_users" class="box overlay" style="color: white;background-color: black;visibility: hidden;"></div> <!-- end overlay -->
+</div> <!-- end container -->
+
+
+</body></html>
