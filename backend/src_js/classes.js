@@ -93,8 +93,8 @@ var User = /** @class */ (function () {
             this.email = user.email;
             this.uid = user.uid;
             this.photoURL = user.photoURL;
-            this.arcs = user.arcs;
-            this.circles = user.circles;
+            user.arcs === undefined ? this.arcs = user.arcs : this.arcs = [];
+            user.circles === undefined ? this.circles = user.circles : this.circles = [];
             this.flags = user.flags;
             this.requests = user.requests;
         }
@@ -133,13 +133,14 @@ var User = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         data = data.val();
-                        this.displayName = data.displayName;
-                        this.email = data.email;
-                        this.photoURL = data.photoURL;
-                        this.arcs = data.arcs;
-                        this.circles = data.circles;
-                        this.flags = data.flags;
-                        this.requests = this.requests;
+                        console.log("Refreshed user data: ", data);
+                        this.displayName = data.displayName === undefined ? "" : data.displayName;
+                        this.email = data.email === undefined ? "" : data.email;
+                        this.photoURL = data.photoURL === undefined ? "" : data.photoURL;
+                        this.arcs = data.arcs === undefined ? "" : data.arcs;
+                        this.circles = data.circles === undefined ? "" : data.circles;
+                        this.flags = data.flags === undefined ? "" : data.flags;
+                        this.requests = data.requests === undefined ? "" : data.requests;
                         return [2 /*return*/];
                 }
             });
@@ -172,12 +173,24 @@ var Circle = /** @class */ (function (_super) {
         var _this = _super.call(this) || this;
         if (args.length == 2) {
             _this.name = args[0];
+            var u_1 = new User(args[1]);
             _this.id = Math.floor(Math.random() * 1000000) + Number(Date.now());
-            var u = new User(args[1]);
-            _this.members = [u];
-            _this.admin = [u];
-            _this.valid = true;
-            _this.updateCircle();
+            u_1.refreshUser().then(function () {
+                console.log(u_1);
+                _this.members = [u_1];
+                _this.admin = [u_1];
+                _this.valid = true;
+                if (u_1.circles) {
+                    u_1.circles.push({ id: _this.id, name: _this.name, type: "circle" });
+                }
+                else {
+                    u_1.circles = [];
+                    u_1.circles.push({ id: _this.id, name: _this.name, type: "circle" });
+                    console.error("User is undefined");
+                }
+                u_1.updateUser();
+                _this.updateCircle();
+            });
         }
         if (args.length == 1) {
             _this.id = args[0];

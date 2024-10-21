@@ -38,12 +38,14 @@ function initServer() {
         console.log("emitting user data event")
         socket.emit('user data', JSON.stringify(u));
         // room join listener; should probably add feature to add members from get
-        socket.on('new circle', async(token:string,name:string) => {
+        socket.on('new circle', async(token:string, name:string) => {
+            console.log("creating nesaw circle")
             let uid;
             try{
-                uid = getUIDfromToken(token)
+                uid = await getUIDfromToken(token)
             } catch(error) {socket.emit("error", error); return;}
             let c = new Circle(name,uid);
+            console.log("success creating new circle!")
             socket.emit("success",{type: "new circle", id: c.id});
         });
         // need to add new Arc system

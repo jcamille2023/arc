@@ -45,8 +45,12 @@ function App() {
             transports: ['websocket'],
             upgrade: false
           })
+          socket.on("success", (obj) => {
+            if(obj.type == "new room")
+          })
         })
       }
+      
       else {
         setAuthState(false);
         setUserState(null);

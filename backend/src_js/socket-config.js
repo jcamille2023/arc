@@ -97,18 +97,24 @@ function initServer() {
                     socket.emit('user data', JSON.stringify(u));
                     // room join listener; should probably add feature to add members from get
                     socket.on('new circle', function (token, name) { return __awaiter(_this, void 0, void 0, function () {
-                        var uid, c;
+                        var uid, error_3, c;
                         return __generator(this, function (_a) {
-                            try {
-                                uid = getUIDfromToken(token);
+                            switch (_a.label) {
+                                case 0:
+                                    _a.trys.push([0, 2, , 3]);
+                                    return [4 /*yield*/, getUIDfromToken(token)];
+                                case 1:
+                                    uid = _a.sent();
+                                    return [3 /*break*/, 3];
+                                case 2:
+                                    error_3 = _a.sent();
+                                    socket.emit("error", error_3);
+                                    return [2 /*return*/];
+                                case 3:
+                                    c = new classes_1.Circle(name, uid);
+                                    socket.emit("success", { type: "new circle", id: c.id });
+                                    return [2 /*return*/];
                             }
-                            catch (error) {
-                                socket.emit("error", error);
-                                return [2 /*return*/];
-                            }
-                            c = new classes_1.Circle(name, uid);
-                            socket.emit("success", { type: "new circle", id: c.id });
-                            return [2 /*return*/];
                         });
                     }); });
                     // need to add new Arc system

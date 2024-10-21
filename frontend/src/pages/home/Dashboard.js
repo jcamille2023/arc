@@ -9,6 +9,7 @@ import {socket } from "../../App";
 let submitNewCircle;
 function NewCircle({func}) {
     let name_ref = useRef()
+    // <Button label="Cancel" onClick={func(null)} />
     return (
         <div style={{padding: '10px'}}> 
             <h1>Create an arc</h1>
@@ -18,7 +19,7 @@ function NewCircle({func}) {
                 const nameValue = name_ref.current.value
                 submitNewCircle(nameValue)
             }}/>
-            <Button label="Cancel" onClick={func(null)} />
+         
         </div>
     );
 }
@@ -35,8 +36,8 @@ function Dashboard({user}) {
             socket.on('connect', () => {
                 console.log("Connected to server")
             })
-            submitNewCircle = (name) => {
-                socket.emit('new circle',name,user.getIdToken())
+            submitNewCircle = async (name) => {
+                socket.emit('new circle',await user.getIdToken(),name)
             }
         }
     }, [user])

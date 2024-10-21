@@ -50,8 +50,8 @@ class User {
             this.email = user.email;
             this.uid = user.uid;
             this.photoURL = user.photoURL;
-            this.arcs = user.arcs;
-            this.circles = user.circles;
+            user.arcs === undefined ? this.arcs = user.arcs : this.arcs = [];
+            user.circles === undefined ? this.circles = user.circles : this.circles = [];
             this.flags = user.flags;
             this.requests = user.requests;
         }
@@ -83,13 +83,14 @@ class User {
         let ref = db.ref("/users/" + this.uid);
         let data = await ref.once('value') 
         data = data.val();
-        this.displayName = data.displayName;
-        this.email = data.email;
-        this.photoURL = data.photoURL;
-        this.arcs = data.arcs;
-        this.circles = data.circles;
-        this.flags = data.flags;
-        this.requests = this.requests;
+        console.log("Refreshed user data: ", data)
+        this.displayName = data.displayName === undefined ? "" : data.displayName;
+        this.email = data.email === undefined ? "" : data.email;
+        this.photoURL = data.photoURL === undefined ? "" : data.photoURL;
+        this.arcs = data.arcs === undefined ? "" : data.arcs;
+        this.circles = data.circles === undefined ? "" : data.circles;
+        this.flags = data.flags === undefined ? "" : data.flags;
+        this.requests = data.requests === undefined ? "" : data.requests;
     }
     // entirely replaces the user object on database with local user
     updateUser() {
@@ -114,12 +115,24 @@ class Circle extends Room {
         super();
         if(args.length==2) {
             this.name = args[0];
-            this.id = Math.floor(Math.random()*1000000) + Number(Date.now());
             const u = new User(args[1])
-            this.members = [u];
-            this.admin = [u];
-            this.valid = true;
-            this.updateCircle()
+            this.id = Math.floor(Math.random()*1000000) + Number(Date.now()); 
+            u.refreshUser().then(() => {
+                console.log(u)
+                this.members = [u];
+                this.admin = [u];
+                this.valid = true;
+                if (u.circles) {
+                    u.circles.push({id: this.id, name: this.name, type: "circle"});
+                } else {
+                    u.circles = [];
+                    u.circles.push({id: this.id, name: this.name, type: "circle"});
+                    console.error("User is undefined");
+                }
+                u.updateUser();
+                this.updateCircle()
+            })
+            
         }
         if(args.length==1) {
             this.id=args[0];
